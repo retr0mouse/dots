@@ -26,6 +26,7 @@
     swaynotificationcenter # notification daemon UI
     btop # resource monitor (CPU/RAM/etc.)
     pavucontrol # audio volume control GUI
+    pwvucontrol # pipewire volume control GUI
     inputs.wlctl.packages.${pkgs.system}.default # network TUI
 
     # desktop / communication apps

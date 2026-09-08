@@ -1,7 +1,6 @@
 {
   pkgs,
   user,
-  inputs,
   ...
 }: {
   imports = [
@@ -17,6 +16,74 @@
   ];
 
   services.hyprpolkitagent.enable = true;
+
+  systemd.user.services.waybar = {
+    Unit = {
+      Description = "Waybar";
+      After = ["graphical-session.target"];
+      PartOf = ["graphical-session.target"];
+    };
+
+    Service = {
+      ExecStart = "${pkgs.waybar}/bin/waybar";
+      Restart = "on-failure";
+    };
+
+    Install = {
+      WantedBy = ["graphical-session.target"];
+    };
+  };
+
+  systemd.user.services.swaync = {
+    Unit = {
+      Description = "Sway Notification Center";
+      After = ["graphical-session.target"];
+      PartOf = ["graphical-session.target"];
+    };
+
+    Service = {
+      ExecStart = "${pkgs.swaynotificationcenter}/bin/swaync";
+      Restart = "on-failure";
+    };
+
+    Install = {
+      WantedBy = ["graphical-session.target"];
+    };
+  };
+
+  systemd.user.services.cliphist-text = {
+    Unit = {
+      Description = "Clipboard history text watcher";
+      After = ["graphical-session.target"];
+      PartOf = ["graphical-session.target"];
+    };
+
+    Service = {
+      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store";
+      Restart = "on-failure";
+    };
+
+    Install = {
+      WantedBy = ["graphical-session.target"];
+    };
+  };
+
+  systemd.user.services.cliphist-image = {
+    Unit = {
+      Description = "Clipboard history image watcher";
+      After = ["graphical-session.target"];
+      PartOf = ["graphical-session.target"];
+    };
+
+    Service = {
+      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store";
+      Restart = "on-failure";
+    };
+
+    Install = {
+      WantedBy = ["graphical-session.target"];
+    };
+  };
 
   systemd.user.services.hyprmoncfgd = {
     Unit = {
@@ -34,6 +101,7 @@
       WantedBy = ["graphical-session.target"];
     };
   };
+
   home = {
     username = user;
     homeDirectory = "/home/${user}";

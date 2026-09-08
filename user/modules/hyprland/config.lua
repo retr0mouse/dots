@@ -130,6 +130,15 @@ hl.window_rule({
 	workspace = "5 silent",
 })
 
+hl.window_rule({
+	match = {
+		class = "^(com.saivert.pwvucontrol)$",
+	},
+	float = true,
+	size = "800 600",
+	center = true,
+})
+
 -- intellij focus fix
 
 hl.window_rule({
@@ -275,9 +284,5 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 10%-"), { lock
 
 -- Autostart
 hl.on("hyprland.start", function()
-	hl.exec_cmd("systemctl --user start waybar.service")
-	hl.exec_cmd("swaync &")
-	hl.exec_cmd("wl-paste --type text --watch cliphist store")
-	hl.exec_cmd("wl-paste --type image --watch cliphist store")
 	hl.exec_cmd("waypaper --restore")
 end)
