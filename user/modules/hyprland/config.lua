@@ -6,8 +6,6 @@ local menu = "rofi -show drun"
 
 local browser = "brave"
 
-require("monitors")
-
 local hyprmoncfg_monitors = os.getenv("HOME") .. "/.config/hypr/hyprmoncfg-monitors.lua"
 
 local file = io.open(hyprmoncfg_monitors, "r")
