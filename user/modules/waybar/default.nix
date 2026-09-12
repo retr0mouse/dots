@@ -113,8 +113,6 @@
           tooltip = false;
           modules = [
             "custom/openbracket"
-            "custom/monitors"
-            "custom/split"
             "backlight"
             "custom/split"
             "pulseaudio"
@@ -129,13 +127,13 @@
           format-icons = {
             default = ["" "" ""];
           };
-          on-click = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-          on-click-right = "pwvucontrol";
+          on-click = "pwvucontrol";
         };
 
         backlight = {
           format = "{icon} {percent}%";
-          format-icons = ["󰃠"];
+          format-icons = ["󰍹 "];
+          on-click = "kitty -e hyprmoncfg";
         };
 
         "group/system" = {
@@ -195,12 +193,6 @@
           return-type = "json";
           interval = 2;
           on-click = "kitty -e bluetui";
-        };
-
-        "custom/monitors" = {
-          on-click = "kitty -e hyprmoncfg";
-          format = "󰍹 ";
-          tooltip = false;
         };
       }
     ];

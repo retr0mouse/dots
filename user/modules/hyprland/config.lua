@@ -139,17 +139,6 @@ hl.window_rule({
 	center = true,
 })
 
--- intellij focus fix
-
-hl.window_rule({
-	name = "noinitialfocus",
-	match = {
-		class = "^(.*jetbrains.*)$",
-		title = "^(win.*)$",
-	},
-	no_initial_focus = true,
-})
-
 -- Move and resize windows with mouse
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true }) -- ALT + LMB: Move a window
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true }) -- ALT + RMB: Resize a window

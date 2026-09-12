@@ -14,6 +14,7 @@
     wlctl.url = "github:aashish-thapa/wlctl";
     nix-minecraft.url = "github:Infinidoge/nix-minecraft";
     soulbrainz.url = "github:retr0mouse/soulbrainz";
+    noctalia-greeter.url = "github:noctalia-dev/noctalia-greeter";
   };
 
   outputs = inputs @ {
@@ -24,6 +25,7 @@
     nix-minecraft,
     soulbrainz,
     nixpkgs-unstable,
+    noctalia-greeter,
     ...
   }: let
     system = "x86_64-linux";
@@ -40,6 +42,7 @@
           ./system/hosts/${hostname}/configuration.nix
 
           home-manager.nixosModules.home-manager
+          noctalia-greeter.nixosModules.default
 
           {
             nixpkgs.overlays = [

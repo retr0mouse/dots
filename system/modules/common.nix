@@ -13,8 +13,21 @@
     options = "--delete-older-than 3d";
   };
 
-  # Boot
-  boot.loader.systemd-boot.enable = true;
+  # Boot / splash
+  boot = {
+    loader.systemd-boot.enable = true;
+    loader.timeout = 1;
+
+    plymouth = {
+      enable = true;
+      theme = "breeze";
+    };
+
+    kernelParams = [
+      "splash"
+      "boot.shell_on_fail"
+    ];
+  };
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Time / Locale
@@ -50,7 +63,6 @@
 
   # nix-ld
   programs.nix-ld.enable = true;
-  
-  environment.systemPackages = [];
 
+  environment.systemPackages = [];
 }

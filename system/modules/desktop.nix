@@ -63,34 +63,17 @@
 
   systemd.services.NetworkManager-wait-online.enable = false;
 
-  # Boot / splash
-  boot = {
-    plymouth = {
-      enable = true;
-      theme = "breeze";
-    };
-
-    consoleLogLevel = 0;
-    initrd.verbose = false;
-
-    kernelParams = [
-      "quiet"
-      "splash"
-      "boot.shell_on_fail"
-      "loglevel=3"
-      "rd.systemd.show_status=false"
-      "rd.udev.log_level=3"
-      "udev.log_priority=3"
-    ];
-  };
-
   # Display Manager
-  services.displayManager.sddm = {
+  programs.noctalia-greeter = {
     enable = true;
-    wayland.enable = true;
+    settings = {
+      cursor = {
+        theme = "Bibata-Modern-Classic";
+        size = 24;
+        path = "${pkgs.bibata-cursors}/share/icons";
+      };
+    };
   };
-
-  services.displayManager.defaultSession = "hyprland-uwsm";
 
   programs = {
     xwayland.enable = true;

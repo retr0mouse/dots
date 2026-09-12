@@ -80,7 +80,6 @@ button {
 #custom-dgpu:hover,
 #memory:hover,
 #custom-cpu:hover,
-#custom-monitors:hover,
 #pulseaudio:hover {
   color: @hover;
 }
