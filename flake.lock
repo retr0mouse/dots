@@ -70,6 +70,25 @@
         "type": "github"
       }
     },
+    "looking-glass-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788263376,
+        "narHash": "sha256-U8g6Gkx1ZHC2TU0dNrLbBFxQHczk5s0LCPUyIaPJ+cs=",
+        "ref": "refs/heads/master",
+        "rev": "236efcb155f952f5d7d9fcd5891a3060ad254e68",
+        "revCount": 4244,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/gnif/LookingGlass"
+      },
+      "original": {
+        "rev": "236efcb155f952f5d7d9fcd5891a3060ad254e68",
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/gnif/LookingGlass"
+      }
+    },
     "nix-minecraft": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -270,6 +289,7 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
+        "looking-glass-src": "looking-glass-src",
         "nix-minecraft": "nix-minecraft",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_3",

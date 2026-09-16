@@ -11,16 +11,15 @@
     prettier # JS/TS/JSON formatter
 
     # core runtimes / CLI utilities
-    jq # command-line JSON processor
+    speedtest-cli # Speedtest CLI
 
     # terminal / UI apps
     kitty-themes # Kitty color scheme collection
     wlogout # logout menu for Wayland
     swaynotificationcenter # notification daemon UI
-    btop # resource monitor (CPU/RAM/etc.)
     pavucontrol # audio volume control GUI
     pwvucontrol # pipewire volume control GUI
-    inputs.wlctl.packages.${pkgs.system}.default # network TUI
+    inputs.wlctl.packages.${pkgs.stdenv.hostPlatform.system}.default # network TUI
 
     # desktop / communication apps
     discord # chat/voice platform
@@ -39,14 +38,11 @@
     jetbrains.pycharm # PyCharm IDE
 
     # system utilities
-    gh # GitHub CLI
     libnotify # desktop notifications CLI (notify-send)
     playerctl # media control CLI (play/pause etc.)
     brightnessctl # screen brightness control
     wl-clipboard # Wayland clipboard tools (wl-copy/paste)
     cliphist # clipboard history manager
-    tree # directory tree viewer
-    fzf # fuzzy finder in terminal
     sl # fun terminal animation (train)
     hollywood # “hacker screen” fake terminal effect
     unrar # archive utility
@@ -59,9 +55,6 @@
     wf-recorder # screen recording tool (Wayland)
     hyprpaper # wallpaper daemon for Hyprland
     gamescope # gaming compositor (Steam/Proton use)
-
-    # file management / navigation
-    yazi # terminal file manager
 
     # office / productivity
     libreoffice-qt # office suite (documents/spreadsheets/etc.)
@@ -76,7 +69,6 @@
     vlc # media player
     audacity # audio editor
     jellyfin-desktop # media playback service
-    plex-desktop # media and music playback service
 
     # gaming / emulation
     prismlauncher # Minecraft launcher

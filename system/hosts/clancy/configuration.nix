@@ -9,8 +9,12 @@
   imports = [
     ../../modules/desktop.nix
     ./hardware-configuration.nix
+    ./vfio.nix
+    ./looking-glass.nix
     inputs.nixos-hardware.nixosModules.asus-zephyrus-ga503
   ];
+
+  home-manager.users.${user}.imports = [../../../user/hosts/clancy.nix];
 
   networking.hostName = "clancy";
   networking.wg-quick.interfaces = {
@@ -40,6 +44,7 @@
   };
 
   services.asusd.enable = true;
+  services.power-profiles-daemon.enable = true;
   services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
 
   services.libinput = {
@@ -48,6 +53,15 @@
   };
 
   services.xserver.enable = true;
+
+  services.udev.extraRules = ''
+    KERNEL=="card*", \
+    KERNELS=="0000:06:00.0", \
+    SUBSYSTEM=="drm", \
+    SUBSYSTEMS=="pci", \
+    SYMLINK+="dri/amd-igpu"
+  '';
+
   services.xserver.videoDrivers = ["amdgpu" "nvidia"];
 
   hardware.nvidia = {
@@ -61,7 +75,7 @@
     package = config.boot.kernelPackages.nvidiaPackages.stable;
 
     prime = {
-      #      amdgpuBusId = "PCI:6:0:0";
+      amdgpuBusId = lib.mkForce "PCI:6:0:0";
       nvidiaBusId = "PCI:1:0:0";
 
       offload = {

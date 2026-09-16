@@ -1,19 +1,15 @@
-{
-  pkgs,
-  user,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
+    ./common.nix
     ./modules/hyprland
     ./modules/waybar
     ./modules/kitty.nix
-    ./modules/zsh.nix
-    ./modules/neovim
     ./modules/brave.nix
-    ./modules/git.nix
     ./programs.nix
     ./scripts.nix
   ];
+
+  programs.zsh.shellAliases.slip = "hyprlock & sleep 0.5 && systemctl suspend";
 
   services.hyprpolkitagent.enable = true;
 
@@ -102,11 +98,6 @@
     };
   };
 
-  home = {
-    username = user;
-    homeDirectory = "/home/${user}";
-  };
-
   home.stateVersion = "24.11"; # First-deploy version — do not change.
 
   wayland.windowManager.hyprland.systemd.enable = false;
@@ -121,18 +112,6 @@
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
-  };
-
-  programs.ssh = {
-    enable = true;
-
-    enableDefaultConfig = false;
-
-    matchBlocks."*" = {
-      addKeysToAgent = "yes";
-      compression = true;
-      serverAliveInterval = 60;
-    };
   };
 
   home.pointerCursor = {
@@ -238,7 +217,4 @@
     #For Anki
     ANKI_WAYLAND = "1";
   };
-
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
 }

@@ -15,6 +15,10 @@
     nix-minecraft.url = "github:Infinidoge/nix-minecraft";
     soulbrainz.url = "github:retr0mouse/soulbrainz";
     noctalia-greeter.url = "github:noctalia-dev/noctalia-greeter";
+    looking-glass-src = {
+      url = "git+https://github.com/gnif/LookingGlass?rev=236efcb155f952f5d7d9fcd5891a3060ad254e68&submodules=1";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
@@ -22,8 +26,6 @@
     nixpkgs,
     home-manager,
     wlctl,
-    nix-minecraft,
-    soulbrainz,
     nixpkgs-unstable,
     noctalia-greeter,
     ...
@@ -74,20 +76,6 @@
         modules = [
           ./system/hosts/${hostname}/configuration.nix
           home-manager.nixosModules.home-manager
-          nix-minecraft.nixosModules.minecraft-servers
-          soulbrainz.nixosModules.default
-
-          {
-            services.soulbrainz = {
-              enable = true;
-            };
-          }
-
-          {
-            nixpkgs.overlays = [
-              inputs.nix-minecraft.overlay
-            ];
-          }
 
           {
             home-manager.useGlobalPkgs = true;

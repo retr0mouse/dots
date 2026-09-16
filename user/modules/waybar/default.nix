@@ -1,5 +1,19 @@
-{...}: {
-  programs.waybar = {
+{
+  config,
+  lib,
+  ...
+}: let
+  cfg = config.dotfiles.waybar;
+in {
+  options.dotfiles.waybar = {
+    showBacklight = lib.mkEnableOption "the display backlight widget";
+    showBattery = lib.mkEnableOption "the battery widget";
+    showDiscreteGpu = lib.mkEnableOption "the discrete GPU widget";
+    showIntegratedGpu = lib.mkEnableOption "the integrated GPU widget";
+    showPowerProfile = lib.mkEnableOption "the power-profile widget";
+  };
+
+  config.programs.waybar = {
     enable = true;
 
     settings = [
@@ -65,17 +79,22 @@
 
         "group/performance" = {
           orientation = "horizontal";
-          modules = [
-            "custom/openbracket"
-            "cpu"
-            "custom/split"
-            "memory"
-            "custom/split"
-            "custom/igpu"
-            "custom/split"
-            "custom/dgpu"
-            "custom/closebracket"
-          ];
+          modules =
+            [
+              "custom/openbracket"
+              "cpu"
+              "custom/split"
+              "memory"
+            ]
+            ++ lib.optionals cfg.showIntegratedGpu [
+              "custom/split"
+              "custom/igpu"
+            ]
+            ++ lib.optionals cfg.showDiscreteGpu [
+              "custom/split"
+              "custom/dgpu"
+            ]
+            ++ ["custom/closebracket"];
         };
 
         cpu = {
@@ -111,13 +130,16 @@
         "group/brightvol" = {
           orientation = "horizontal";
           tooltip = false;
-          modules = [
-            "custom/openbracket"
-            "backlight"
-            "custom/split"
-            "pulseaudio"
-            "custom/closebracket"
-          ];
+          modules =
+            ["custom/openbracket"]
+            ++ lib.optionals cfg.showBacklight [
+              "backlight"
+              "custom/split"
+            ]
+            ++ [
+              "pulseaudio"
+              "custom/closebracket"
+            ];
         };
 
         pulseaudio = {
@@ -138,19 +160,26 @@
 
         "group/system" = {
           orientation = "horizontal";
-          modules = [
-            "custom/openbracket"
-            "custom/powerprofile"
-            "custom/split"
-            "custom/bluetooth"
-            "custom/split"
-            "network"
-            "custom/split"
-            "battery"
-            "custom/split"
-            "custom/swaync"
-            "custom/closebracket"
-          ];
+          modules =
+            ["custom/openbracket"]
+            ++ lib.optionals cfg.showPowerProfile [
+              "custom/powerprofile"
+              "custom/split"
+            ]
+            ++ [
+              "custom/bluetooth"
+              "custom/split"
+              "network"
+            ]
+            ++ lib.optionals cfg.showBattery [
+              "custom/split"
+              "battery"
+            ]
+            ++ [
+              "custom/split"
+              "custom/swaync"
+              "custom/closebracket"
+            ];
         };
 
         clock = {

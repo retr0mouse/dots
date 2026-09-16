@@ -1,7 +1,9 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.neovim = {
     enable = true;
     defaultEditor = true;
+    withPython3 = true;
+    withRuby = true;
 
     extraPackages = with pkgs; [
       nil # nix
@@ -12,26 +14,24 @@
       vscode-langservers-extracted # html/css/json/ESLint
       yaml-language-server # yaml
       bash-language-server # bash
-      dockerfile-language-server-nodejs # dockerfile
+      dockerfile-language-server # dockerfile
       ripgrep
     ];
 
-    plugins =
-      let
-        alabaster-nvim = pkgs.vimUtils.buildVimPlugin {
-          pname = "alabaster-nvim";
-          version = "unstable";
+    plugins = let
+      alabaster-nvim = pkgs.vimUtils.buildVimPlugin {
+        pname = "alabaster-nvim";
+        version = "unstable";
 
-          src = pkgs.fetchFromGitHub {
-            owner = "p00f";
-            repo = "alabaster.nvim";
-            rev = "master";
-            hash = "sha256-Rp/nl5dlz55aChrYUL7ir3XtWDFFS99CHS3l3FoCI7c=";
-          };
+        src = pkgs.fetchFromGitHub {
+          owner = "p00f";
+          repo = "alabaster.nvim";
+          rev = "master";
+          hash = "sha256-Rp/nl5dlz55aChrYUL7ir3XtWDFFS99CHS3l3FoCI7c=";
         };
-      in
-      with pkgs.vimPlugins;
-      [
+      };
+    in
+      with pkgs.vimPlugins; [
         alabaster-nvim
 
         # syntax
@@ -80,7 +80,7 @@
       colorscheme alabaster
     '';
 
-    extraLuaConfig = ''
+    initLua = ''
       package.path = package.path .. ";${./lua}/?.lua"
 
       require("options")

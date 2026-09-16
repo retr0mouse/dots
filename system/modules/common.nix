@@ -13,18 +13,12 @@
     options = "--delete-older-than 3d";
   };
 
-  # Boot / splash
+  # Boot
   boot = {
     loader.systemd-boot.enable = true;
     loader.timeout = 1;
 
-    plymouth = {
-      enable = true;
-      theme = "breeze";
-    };
-
     kernelParams = [
-      "splash"
       "boot.shell_on_fail"
     ];
   };
@@ -41,10 +35,6 @@
     dbus.enable = true;
     fstrim.enable = true;
     timesyncd.enable = true;
-    openssh = {
-      enable = true;
-      settings.PasswordAuthentication = false;
-    };
   };
 
   # User
@@ -53,7 +43,6 @@
     shell = pkgs.zsh;
     extraGroups = [
       "wheel"
-      "networkmanager"
     ];
   };
 

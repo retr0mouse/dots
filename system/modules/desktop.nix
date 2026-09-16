@@ -38,11 +38,20 @@
     };
   };
 
+  # Boot splash
+  boot = {
+    plymouth = {
+      enable = true;
+      theme = "breeze";
+    };
+
+    kernelParams = ["splash"];
+  };
+
   # Core desktop services
   services = {
     upower.enable = true;
     pcscd.enable = true;
-    power-profiles-daemon.enable = true;
     gvfs.enable = true;
     udisks2.enable = true;
   };
@@ -52,10 +61,7 @@
     rtkit.enable = true;
   };
 
-  # Spotify LAN sync
-  networking.firewall.allowedTCPPorts = [57621];
-
-  # Networking (iwd + NetworkManager)
+  # NetworkManager with a wpa_supplicant Wi-Fi backend
   networking = {
     networkmanager.enable = true;
     networkmanager.wifi.backend = "wpa_supplicant";
@@ -82,11 +88,7 @@
       withUWSM = true;
     };
 
-    steam = {
-      enable = true;
-      remotePlay.openFirewall = true;
-      dedicatedServer.openFirewall = true;
-    };
+    steam.enable = true;
 
     gamescope.enable = true;
   };
@@ -130,6 +132,7 @@
   # User
   users.users.${user}.extraGroups = lib.mkAfter [
     "input"
+    "networkmanager"
     "video"
     "render"
   ];
