@@ -2,7 +2,7 @@
   inputs,
   lib,
   pkgs,
-  user,
+  username,
   ...
 }: {
   imports = [
@@ -15,7 +15,7 @@
     enable = true;
     serviceMode = "user";
     withWlroots = true;
-    userName = user;
+    userName = username;
 
     config = {
       virtual_modifiers = ["CapsLock"];
@@ -130,7 +130,7 @@
   };
 
   # User
-  users.users.${user}.extraGroups = lib.mkAfter [
+  users.users.${username}.extraGroups = lib.mkAfter [
     "input"
     "networkmanager"
     "video"

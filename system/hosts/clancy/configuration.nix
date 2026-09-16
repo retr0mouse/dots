@@ -3,7 +3,7 @@
   lib,
   pkgs,
   inputs,
-  user,
+  username,
   ...
 }: {
   imports = [
@@ -14,7 +14,7 @@
     inputs.nixos-hardware.nixosModules.asus-zephyrus-ga503
   ];
 
-  home-manager.users.${user}.imports = [../../../user/hosts/clancy.nix];
+  home-manager.users.${username}.imports = [../../../user/hosts/clancy.nix];
 
   networking.hostName = "clancy";
   networking.wg-quick.interfaces = {

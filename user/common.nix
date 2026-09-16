@@ -1,6 +1,6 @@
 {
   pkgs,
-  user,
+  username,
   ...
 }: {
   imports = [
@@ -10,8 +10,8 @@
   ];
 
   home = {
-    username = user;
-    homeDirectory = "/home/${user}";
+    inherit username;
+    homeDirectory = "/home/${username}";
     packages = with pkgs; [
       btop
       fzf

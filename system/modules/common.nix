@@ -1,6 +1,6 @@
 {
   pkgs,
-  user,
+  username,
   ...
 }: {
   # Nix
@@ -38,7 +38,7 @@
   };
 
   # User
-  users.users.${user} = {
+  users.users.${username} = {
     isNormalUser = true;
     shell = pkgs.zsh;
     extraGroups = [

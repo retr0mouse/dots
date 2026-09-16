@@ -1,12 +1,12 @@
 {
   lib,
   pkgs,
-  user,
+  username,
   ...
 }: {
   programs.virt-manager.enable = true;
 
-  users.users.${user}.extraGroups = lib.mkAfter [
+  users.users.${username}.extraGroups = lib.mkAfter [
     "libvirtd"
     "kvm"
   ];

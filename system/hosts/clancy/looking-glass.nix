@@ -2,7 +2,7 @@
   config,
   inputs,
   pkgs,
-  user,
+  username,
   ...
 }: let
   looking-glass-client-dev = pkgs.looking-glass-client.overrideAttrs (old: {
@@ -68,7 +68,7 @@ in {
   '';
 
   services.udev.extraRules = ''
-    SUBSYSTEM=="kvmfr", OWNER="${user}", GROUP="kvm", MODE="0660"
+    SUBSYSTEM=="kvmfr", OWNER="${username}", GROUP="kvm", MODE="0660"
   '';
 
   virtualisation.libvirtd.qemu.verbatimConfig = ''

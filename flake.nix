@@ -2,8 +2,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
 
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -22,26 +20,25 @@
   };
 
   outputs = inputs @ {
-    self,
     nixpkgs,
     home-manager,
-    wlctl,
-    nixpkgs-unstable,
     noctalia-greeter,
     ...
   }: let
     system = "x86_64-linux";
-    user = "reisdro";
-    mkDesktopHost = hostname:
+    mkDesktopHost = {
+      hostName,
+      username,
+    }:
       nixpkgs.lib.nixosSystem {
         inherit system;
 
         specialArgs = {
-          inherit inputs user;
+          inherit inputs username;
         };
 
         modules = [
-          ./system/hosts/${hostname}/configuration.nix
+          ./system/hosts/${hostName}/configuration.nix
 
           home-manager.nixosModules.home-manager
           noctalia-greeter.nixosModules.default
@@ -58,23 +55,26 @@
             home-manager.backupFileExtension = "backup";
 
             home-manager.extraSpecialArgs = {
-              inherit inputs user;
+              inherit inputs username;
             };
 
-            home-manager.users.${user} = import ./user/home.nix;
+            home-manager.users.${username} = import ./user/home.nix;
           }
         ];
       };
-    mkServerHost = hostname:
+    mkServerHost = {
+      hostName,
+      username,
+    }:
       nixpkgs.lib.nixosSystem {
         inherit system;
 
         specialArgs = {
-          inherit inputs user;
+          inherit inputs username;
         };
 
         modules = [
-          ./system/hosts/${hostname}/configuration.nix
+          ./system/hosts/${hostName}/configuration.nix
           home-manager.nixosModules.home-manager
 
           {
@@ -83,17 +83,23 @@
             home-manager.backupFileExtension = "backup";
 
             home-manager.extraSpecialArgs = {
-              inherit inputs user;
+              inherit inputs username;
             };
 
-            home-manager.users.${user} = import ./user/home-server.nix;
+            home-manager.users.${username} = import ./user/home-server.nix;
           }
         ];
       };
   in {
     nixosConfigurations = {
-      clancy = mkDesktopHost "clancy";
-      nico = mkServerHost "nico";
+      clancy = mkDesktopHost {
+        hostName = "clancy";
+        username = "reisdro";
+      };
+      nico = mkServerHost {
+        hostName = "nico";
+        username = "reisdro";
+      };
     };
   };
 }

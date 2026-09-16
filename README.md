@@ -206,7 +206,14 @@ proxy and TLS boundary as the application stack.
 ## User environment
 
 The shared Home Manager profile keeps the interactive environment consistent
-across desktop and server machines. It includes:
+across desktop and server machines.
+
+Each host selects the username that receives this profile. The profile derives
+the account name and home directory from that choice instead of assuming a
+fixed username, so moving a role to new hardware does not require preserving
+the old machine's account name.
+
+The shared profile includes:
 
 - Zsh and common aliases
 - Git and Delta
