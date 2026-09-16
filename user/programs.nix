@@ -12,6 +12,7 @@
 
     # core runtimes / CLI utilities
     speedtest-cli # Speedtest CLI
+    codex # AI
 
     # terminal / UI apps
     kitty-themes # Kitty color scheme collection

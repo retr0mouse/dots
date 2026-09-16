@@ -3,11 +3,19 @@
     enable = true;
 
     settings = {
-      app.shmFile = "/dev/kvmfr0";
+      lgmp.shmDevice = "/dev/kvmfr0";
 
       win = {
-        jitRender = true;
+        # JIT presentation pacing causes periodic frame drops under Hyprland.
+        jitRender = false;
         showFPS = true;
+      };
+
+      input = {
+        # Games need relative input so the pointer cannot hit a host edge.
+        rawMouse = true;
+        captureOnFocus = true;
+        escapeKey = "KEY_F12";
       };
     };
   };
