@@ -238,6 +238,7 @@ machine outside Git and outside the Nix store.
 Secret-bearing integrations include:
 
 - WireGuard private keys
+- Home-network identifiers used by the automatic WireGuard policy
 - Dynamic DNS and ACME credentials
 - Grafana’s secret key
 - Vaultwarden’s environment
@@ -248,6 +249,13 @@ The Minecraft environment file uses this format:
 
 ```text
 RCON_PASSWORD=<a-strong-password>
+```
+
+The Clancy WireGuard policy reads `/etc/secrets/wireguard-home-network.env`:
+
+```text
+WIREGUARD_HOME_WIFI_UUIDS="<uuid> <another-uuid>"
+WIREGUARD_HOME_GATEWAY_MAC="<gateway-mac>"
 ```
 
 Secret files must exist before activating a configuration that consumes them.

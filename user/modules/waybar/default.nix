@@ -11,6 +11,7 @@ in {
     showDiscreteGpu = lib.mkEnableOption "the discrete GPU widget";
     showIntegratedGpu = lib.mkEnableOption "the integrated GPU widget";
     showPowerProfile = lib.mkEnableOption "the power-profile widget";
+    showVpn = lib.mkEnableOption "the WireGuard VPN widget";
   };
 
   config.programs.waybar = {
@@ -57,6 +58,13 @@ in {
           interval = 5;
           tooltip = false;
           exec-tooltip = "powerprofile tooltip";
+        };
+
+        "custom/vpn" = {
+          exec = "vpn-control status";
+          on-click = "vpn-control toggle";
+          interval = 5;
+          return-type = "json";
         };
 
         "group/workspaces" = {
@@ -170,6 +178,10 @@ in {
               "custom/bluetooth"
               "custom/split"
               "network"
+            ]
+            ++ lib.optionals cfg.showVpn [
+              "custom/split"
+              "custom/vpn"
             ]
             ++ lib.optionals cfg.showBattery [
               "custom/split"
