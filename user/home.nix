@@ -3,6 +3,8 @@
     ./common.nix
     ./modules/hyprland
     ./modules/waybar
+    ./modules/rofi
+    ./modules/swaync
     ./modules/kitty.nix
     ./modules/brave.nix
     ./programs.nix
@@ -123,10 +125,6 @@
   };
 
   home.file = {
-  };
-
-  programs.rofi = {
-    enable = true;
   };
 
   programs.hyprlock = {

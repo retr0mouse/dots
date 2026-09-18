@@ -1,0 +1,174 @@
+/*
+ * A compact companion to the Waybar theme: square geometry, bracketed
+ * structure, and the same restrained green-grey palette.
+ */
+
+* {
+    background:        #101211;
+    second-background: #1a1d1b;
+    text:              #c5c8c5;
+    borders:           #303630;
+    focused:           #98a87c;
+    hover:             #7f9f9f;
+    urgent:            #d08770;
+    match-highlight:   bold #7f9f9f;
+
+    background-color: transparent;
+    text-color:       @text;
+    border-color:     @borders;
+    spacing:          0;
+}
+
+window {
+    width:            640px;
+    padding:          1px;
+    border:           0;
+    border-radius:    0;
+    background-color: @borders;
+}
+
+mainbox {
+    children:         [ inputbar, message, listview ];
+    background-color: @background;
+}
+
+inputbar {
+    children:         [ textbox-open, prompt, textbox-split, entry, textbox-close ];
+    padding:          11px 13px;
+    border:           0 0 1px 0;
+    border-color:     @borders;
+    background-color: @second-background;
+}
+
+textbox-split {
+    expand:     false;
+    str:        "|";
+    margin:     0 7px;
+    text-color: @borders;
+}
+
+textbox-open {
+    expand:     false;
+    str:        "[";
+    text-color: @borders;
+}
+
+textbox-close {
+    expand:     false;
+    str:        "]";
+    text-color: @borders;
+}
+
+prompt {
+    expand:     false;
+    text-color: @focused;
+}
+
+entry {
+    expand:            true;
+    placeholder:       "type to filter";
+    placeholder-color: @borders;
+    text-color:        @text;
+}
+
+message {
+    padding:          8px 13px;
+    border:           0 0 1px 0;
+    border-color:     @borders;
+    background-color: @background;
+}
+
+textbox {
+    text-color: @text;
+}
+
+listview {
+    lines:            9;
+    columns:          1;
+    fixed-height:     false;
+    dynamic:          true;
+    cycle:            true;
+    scrollbar:        true;
+    layout:           vertical;
+    padding:          5px 0;
+    background-color: @background;
+}
+
+element {
+    children:         [ element-text ];
+    padding:          7px 13px;
+    border:           0;
+    border-radius:    0;
+    background-color: transparent;
+    text-color:       @text;
+    cursor:           pointer;
+}
+
+element alternate.normal {
+    background-color: transparent;
+    text-color:       @text;
+}
+
+element normal.normal {
+    background-color: transparent;
+    text-color:       @text;
+}
+
+element alternate.active {
+    background-color: transparent;
+    text-color:       @focused;
+}
+
+element normal.active {
+    background-color: transparent;
+    text-color:       @focused;
+}
+
+element alternate.urgent {
+    background-color: transparent;
+    text-color:       @urgent;
+}
+
+element normal.urgent {
+    background-color: transparent;
+    text-color:       @urgent;
+}
+
+element selected.normal {
+    background-color: @second-background;
+    text-color:       @focused;
+}
+
+element selected.active {
+    background-color: @second-background;
+    text-color:       @focused;
+}
+
+element selected.urgent {
+    background-color: @urgent;
+    text-color:       @background;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+    highlight:        @match-highlight;
+}
+
+scrollbar {
+    width:            9px;
+    padding:          4px 4px 4px 3px;
+    border:           0;
+    background-color: transparent;
+    handle-width:     2px;
+    handle-color:     @borders;
+}
+
+error-message {
+    padding:          13px;
+    border:           1px;
+    border-color:     @urgent;
+    border-radius:    0;
+    background-color: @background;
+    text-color:       @urgent;
+}
