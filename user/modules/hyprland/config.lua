@@ -136,7 +136,43 @@ hl.window_rule({
 		class = "^(com.saivert.pwvucontrol)$",
 	},
 	float = true,
-	size = "800 600",
+	size = "70% 70%",
+	center = true,
+})
+
+hl.window_rule({
+	match = {
+		class = "^(waybar-performance)$",
+	},
+	float = true,
+	size = "70% 70%",
+	center = true,
+})
+
+hl.window_rule({
+	match = {
+		class = "^(waybar-monitor)$",
+	},
+	float = true,
+	size = "70% 70%",
+	center = true,
+})
+
+hl.window_rule({
+	match = {
+		class = "^(waybar-network)$",
+	},
+	float = true,
+	size = "70% 70%",
+	center = true,
+})
+
+hl.window_rule({
+	match = {
+		class = "^(waybar-bluetooth)$",
+	},
+	float = true,
+	size = "70% 70%",
 	center = true,
 })
 

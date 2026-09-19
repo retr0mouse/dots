@@ -109,14 +109,14 @@ in {
           format = "CPU:{usage}%";
           tooltip = false;
           interval = 2;
-          on-click = "kitty -e btop";
+          on-click = "kitty --class waybar-performance --title '[ performance ]' -e btop";
         };
 
         memory = {
           format = "RAM:{}%";
           tooltip = false;
           interval = 2;
-          on-click = "kitty -e btop";
+          on-click = "kitty --class waybar-performance --title '[ performance ]' -e btop";
         };
 
         "custom/igpu" = {
@@ -124,7 +124,7 @@ in {
           interval = 2;
           tooltip = false;
           format = "iGPU:{}";
-          on-click = "kitty -e btop";
+          on-click = "kitty --class waybar-performance --title '[ performance ]' -e btop";
         };
 
         "custom/dgpu" = {
@@ -132,7 +132,7 @@ in {
           interval = 2;
           tooltip = false;
           format = "dGPU:{}";
-          on-click = "kitty -e btop";
+          on-click = "kitty --class waybar-performance --title '[ performance ]' -e btop";
         };
 
         "group/brightvol" = {
@@ -163,7 +163,7 @@ in {
         backlight = {
           format = "{icon} {percent}%";
           format-icons = ["󰍹 "];
-          on-click = "kitty -e hyprmoncfg";
+          on-click = "kitty --class waybar-monitor --title '[ monitors ]' -e hyprmoncfg";
         };
 
         "group/system" = {
@@ -225,7 +225,7 @@ in {
           format-ethernet = "󰈀 LAN";
           format-disconnected = "󰖪 ";
           tooltip-format = "{ipaddr}\n{essid} ({signalStrength}%)";
-          on-click = "kitty -e wlctl";
+          on-click = "kitty --class waybar-network --title '[ network ]' -e wlctl";
           format-icons = ["󰤯" "󰤟" "󰤢" "󰤥" "󰤨"];
         };
 
@@ -233,7 +233,7 @@ in {
           exec = "bluetooth_status";
           return-type = "json";
           interval = 2;
-          on-click = "kitty -e bluetui";
+          on-click = "kitty --class waybar-bluetooth --title '[ bluetooth ]' -e bluetui";
         };
       }
     ];

@@ -18,7 +18,6 @@
     kitty-themes # Kitty color scheme collection
     swaynotificationcenter # notification daemon UI
     pavucontrol # audio volume control GUI
-    pwvucontrol # pipewire volume control GUI
     inputs.wlctl.packages.${pkgs.stdenv.hostPlatform.system}.default # network TUI
 
     # desktop / communication apps

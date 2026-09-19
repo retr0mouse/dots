@@ -8,6 +8,7 @@
     ./modules/swaync
     ./modules/terminal-tools
     ./modules/kitty.nix
+    ./modules/pwvucontrol
     ./modules/brave.nix
     ./programs.nix
     ./scripts.nix

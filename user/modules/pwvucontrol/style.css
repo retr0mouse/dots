@@ -1,0 +1,241 @@
+/* App-local palette: this file is embedded only into pwvucontrol. */
+@define-color accent_bg_color #98a87c;
+@define-color accent_fg_color #101211;
+@define-color accent_color #a8b98c;
+@define-color destructive_bg_color #d08770;
+@define-color destructive_fg_color #101211;
+@define-color destructive_color #d08770;
+@define-color success_bg_color #98a87c;
+@define-color success_fg_color #101211;
+@define-color success_color #a8b98c;
+@define-color warning_bg_color #c6a96b;
+@define-color warning_fg_color #101211;
+@define-color warning_color #c6a96b;
+@define-color error_bg_color #d08770;
+@define-color error_fg_color #101211;
+@define-color error_color #d08770;
+@define-color window_bg_color #101211;
+@define-color window_fg_color #c5c8c5;
+@define-color view_bg_color #101211;
+@define-color view_fg_color #c5c8c5;
+@define-color headerbar_bg_color #101211;
+@define-color headerbar_fg_color #c5c8c5;
+@define-color headerbar_border_color #303630;
+@define-color headerbar_backdrop_color #101211;
+@define-color headerbar_shade_color #303630;
+@define-color headerbar_darker_shade_color #303630;
+@define-color card_bg_color #1a1d1b;
+@define-color card_fg_color #c5c8c5;
+@define-color card_shade_color #303630;
+@define-color dialog_bg_color #101211;
+@define-color dialog_fg_color #c5c8c5;
+@define-color popover_bg_color #1a1d1b;
+@define-color popover_fg_color #c5c8c5;
+@define-color popover_shade_color #303630;
+@define-color shade_color #303630;
+@define-color scrollbar_outline_color transparent;
+
+:root {
+  --accent-bg-color: #98a87c;
+  --accent-fg-color: #101211;
+  --accent-color: #a8b98c;
+  --destructive-bg-color: #d08770;
+  --destructive-fg-color: #101211;
+  --destructive-color: #d08770;
+  --success-bg-color: #98a87c;
+  --success-fg-color: #101211;
+  --success-color: #a8b98c;
+  --warning-bg-color: #c6a96b;
+  --warning-fg-color: #101211;
+  --warning-color: #c6a96b;
+  --error-bg-color: #d08770;
+  --error-fg-color: #101211;
+  --error-color: #d08770;
+  --window-bg-color: #101211;
+  --window-fg-color: #c5c8c5;
+  --view-bg-color: #101211;
+  --view-fg-color: #c5c8c5;
+  --headerbar-bg-color: #101211;
+  --headerbar-fg-color: #c5c8c5;
+  --headerbar-border-color: #303630;
+  --headerbar-backdrop-color: #101211;
+  --headerbar-shade-color: #303630;
+  --headerbar-darker-shade-color: #303630;
+  --card-bg-color: #1a1d1b;
+  --card-fg-color: #c5c8c5;
+  --card-shade-color: #303630;
+  --dialog-bg-color: #101211;
+  --dialog-fg-color: #c5c8c5;
+  --popover-bg-color: #1a1d1b;
+  --popover-fg-color: #c5c8c5;
+  --popover-shade-color: #303630;
+  --shade-color: #303630;
+  --border-color: #303630;
+  --border-opacity: 100%;
+  --scrollbar-outline-color: transparent;
+  --window-radius: 0;
+}
+
+* {
+  font-family: "Iosevka Nerd Font";
+}
+
+window,
+window.background,
+.background,
+viewport {
+  color: #c5c8c5;
+  background-color: #101211;
+}
+
+headerbar {
+  color: #c5c8c5;
+  background-color: #101211;
+  border-bottom: 1px solid #303630;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+viewswitcher button,
+viewswitcher button:hover,
+viewswitcher button:checked {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+viewswitcher button:hover {
+  color: #7f9f9f;
+  background-color: #1a1d1b;
+}
+
+viewswitcher button:checked {
+  color: #98a87c;
+  background-color: #1a1d1b;
+  box-shadow: inset 0 -2px #98a87c;
+}
+
+button,
+menubutton > button,
+dropdown > button {
+  border: 1px solid transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+button:hover,
+menubutton > button:hover,
+dropdown > button:hover {
+  color: #7f9f9f;
+  background-color: #1a1d1b;
+  border-color: #303630;
+}
+
+button:checked,
+togglebutton:checked {
+  color: #101211;
+  background-color: #98a87c;
+  border-color: #98a87c;
+}
+
+list.boxed-list {
+  background-color: #1a1d1b;
+  border: 1px solid #303630;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+list.boxed-list > row {
+  color: #c5c8c5;
+  background-color: #1a1d1b;
+  border-bottom: 1px solid #303630;
+  border-radius: 0;
+}
+
+list.boxed-list > row:last-child {
+  border-bottom: 0;
+}
+
+list.boxed-list > row:hover {
+  background-color: #202522;
+}
+
+.title {
+  color: #c5c8c5;
+  font-weight: 700;
+}
+
+.subtitle,
+dim-label {
+  color: #7f9f9f;
+}
+
+scale > trough {
+  min-height: 5px;
+  background-color: #303630;
+  border-radius: 0;
+}
+
+scale > trough > highlight {
+  background-color: #98a87c;
+  border-radius: 0;
+}
+
+scale > trough > slider {
+  min-width: 14px;
+  min-height: 14px;
+  background-color: #c5c8c5;
+  border: 1px solid #98a87c;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+scale > trough > slider:hover {
+  background-color: #7f9f9f;
+}
+
+dropdown > button,
+menubutton > button {
+  color: #c5c8c5;
+  background-color: #1a1d1b;
+  border-color: #303630;
+}
+
+popover > contents,
+popover.menu > contents {
+  color: #c5c8c5;
+  background-color: #1a1d1b;
+  border: 1px solid #303630;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+popover modelbutton:hover {
+  color: #101211;
+  background-color: #7f9f9f;
+}
+
+.vumeter {
+  background-color: #1a1d1b;
+  border: 1px solid #303630;
+  border-radius: 0;
+}
+
+separator {
+  min-height: 1px;
+  background-color: #303630;
+}
+
+scrollbar,
+scrollbar slider {
+  min-width: 0;
+  min-height: 0;
+  opacity: 0;
+}
+
+tooltip,
+tooltip.background {
+  color: #c5c8c5;
+  background-color: #1a1d1b;
+  border: 1px solid #303630;
+  border-radius: 0;
+}
