@@ -1,0 +1,63 @@
+@define-color background #101211;
+@define-color second-background #1a1d1b;
+@define-color text #c5c8c5;
+@define-color borders #303630;
+@define-color focused #98a87c;
+@define-color hover #7f9f9f;
+@define-color urgent #d08770;
+
+window#osd {
+  padding: 0;
+  color: @text;
+  background: @background;
+  border: 1px solid @borders;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+window#osd #container {
+  margin: 10px 12px;
+  padding: 0;
+  background: transparent;
+}
+
+window#osd image,
+window#osd label {
+  color: @text;
+}
+
+window#osd image {
+  margin-right: 10px;
+  -gtk-icon-size: 20px;
+}
+
+window#osd progressbar {
+  min-width: 180px;
+  min-height: 4px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+window#osd progressbar trough {
+  min-height: 4px;
+  background: @second-background;
+  border: 0;
+  border-radius: 0;
+}
+
+window#osd progressbar progress {
+  min-height: 4px;
+  background: @focused;
+  border: 0;
+  border-radius: 0;
+}
+
+window#osd progressbar:disabled progress {
+  background: @urgent;
+}
+
+window#osd image:disabled {
+  color: @urgent;
+  opacity: 1;
+}

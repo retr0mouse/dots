@@ -1,0 +1,51 @@
+@define-color background #101211;
+@define-color second-background #1a1d1b;
+@define-color text #c5c8c5;
+@define-color borders #303630;
+@define-color focused #98a87c;
+@define-color hover #7f9f9f;
+@define-color urgent #d08770;
+
+* {
+  font-family: "Iosevka Nerd Font";
+  font-size: 18px;
+  background-image: none;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+window {
+  background-color: rgba(16, 18, 17, 0.94);
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  color: @text;
+  background-color: @background;
+  border: 1px solid @borders;
+  border-radius: 0;
+  transition:
+    background-color 120ms ease-in-out,
+    color 120ms ease-in-out,
+    border-color 120ms ease-in-out;
+}
+
+button:hover,
+button:focus,
+button:active {
+  color: @focused;
+  background-color: @second-background;
+  border-color: @focused;
+  outline-style: none;
+}
+
+#reboot:hover,
+#reboot:focus,
+#reboot:active,
+#shutdown:hover,
+#shutdown:focus,
+#shutdown:active {
+  color: @urgent;
+  border-color: @urgent;
+}

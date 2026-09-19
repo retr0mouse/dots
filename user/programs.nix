@@ -16,7 +16,6 @@
 
     # terminal / UI apps
     kitty-themes # Kitty color scheme collection
-    wlogout # logout menu for Wayland
     swaynotificationcenter # notification daemon UI
     pavucontrol # audio volume control GUI
     pwvucontrol # pipewire volume control GUI

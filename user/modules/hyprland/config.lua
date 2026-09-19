@@ -6,6 +6,9 @@ local menu = "rofi -show drun"
 
 local browser = "brave"
 
+local screenshot =
+	[[grim -g "$(slurp -d -b '#101211cc' -c '#98a87cff' -s '#1a1d1b66' -B '#303630ff' -F 'Iosevka Nerd Font' -w 1)" - | swappy -f -]]
+
 local hyprmoncfg_monitors = os.getenv("HOME") .. "/.config/hypr/hyprmoncfg-monitors.lua"
 
 local file = io.open(hyprmoncfg_monitors, "r")
@@ -243,7 +246,7 @@ hl.bind("SUPER + SHIFT" .. " + " .. 0, hl.dsp.window.move({ workspace = 10 }))
 hl.bind("SUPER + SHIFT" .. " + " .. "N", hl.dsp.window.move({ workspace = "special" }))
 
 -- Screenshot
-hl.bind("SUPER + SHIFT" .. " + " .. "S", hl.dsp.exec_cmd('grim -g "$(slurp)" - | swappy -f -'))
+hl.bind("SUPER + SHIFT" .. " + " .. "S", hl.dsp.exec_cmd(screenshot))
 
 -- Ignore maximize requests from apps. You'll probably like this.
 
@@ -257,17 +260,17 @@ hl.window_rule({
 
 -- Laptop multimedia keys for volume and LCD brightness
 
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true })
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume raise"), { locked = true })
 
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"), { locked = true })
 
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"), { locked = true })
 
-hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true })
+hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("swayosd-client --input-volume mute-toggle"), { locked = true })
 
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl s 10%+"), { locked = true })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("swayosd-client --brightness raise"), { locked = true })
 
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 10%-"), { locked = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("swayosd-client --brightness lower"), { locked = true })
 
 -- Autostart
 hl.on("hyprland.start", function()

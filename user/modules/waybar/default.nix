@@ -211,7 +211,7 @@ in {
           format = "{icon} {capacity}%";
           format-charging = "󰂄 {capacity}%";
           format-icons = ["󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰁹"];
-          on-click = "wlogout";
+          on-click = "session-menu";
         };
 
         "custom/swaync" = {
