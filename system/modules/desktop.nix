@@ -24,6 +24,8 @@ in {
     serviceMode = "user";
     withWlroots = true;
     userName = username;
+    # Keep listening for keyboards connected after xremap starts.
+    watch = true;
 
     config = {
       virtual_modifiers = ["CapsLock"];
@@ -43,6 +45,18 @@ in {
           };
         }
       ];
+    };
+  };
+
+  # The upstream NixOS module does not restart its user service. Retry forever
+  # so transient input-device or session disruptions cannot leave remapping off.
+  systemd.user.services.xremap = {
+    partOf = ["graphical-session.target"];
+    after = ["graphical-session.target"];
+    startLimitIntervalSec = 0;
+    serviceConfig = {
+      Restart = "always";
+      RestartSec = "2s";
     };
   };
 
