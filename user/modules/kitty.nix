@@ -10,9 +10,11 @@
       cursor_shape = "block";
       cursor_blink_interval = 0;
       tab_bar_edge = "top";
-      tab_bar_style = "powerline";
-      tab_powerline_style = "slanted";
-      tab_title_template = "[{index}] {title}";
+      tab_bar_style = "separator";
+      tab_separator = ''" "'';
+      tab_title_template = "[ {index} | {title} ]";
+      active_tab_font_style = "bold";
+      inactive_tab_font_style = "bold";
     };
     extraConfig = ''
       background #0f1115

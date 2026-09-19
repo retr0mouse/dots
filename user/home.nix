@@ -6,6 +6,7 @@
     ./modules/rofi
     ./modules/session-controls
     ./modules/swaync
+    ./modules/terminal-tools
     ./modules/kitty.nix
     ./modules/brave.nix
     ./programs.nix
