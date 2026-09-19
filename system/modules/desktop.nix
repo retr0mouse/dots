@@ -4,7 +4,15 @@
   pkgs,
   username,
   ...
-}: {
+}: let
+  plymouthTheme = pkgs.runCommand "waybar-plymouth-theme" {} ''
+    themeDir="$out/share/plymouth/themes/waybar"
+    mkdir -p "$themeDir"
+    cp ${./plymouth/waybar.script} "$themeDir/waybar.script"
+    substitute ${./plymouth/waybar.plymouth} "$themeDir/waybar.plymouth" \
+      --replace-fail '@out@' "$out"
+  '';
+in {
   imports = [
     ./common.nix
     inputs.xremap-flake.nixosModules.default
@@ -42,7 +50,9 @@
   boot = {
     plymouth = {
       enable = true;
-      theme = "breeze";
+      theme = "waybar";
+      themePackages = [plymouthTheme];
+      font = "${pkgs.nerd-fonts.iosevka}/share/fonts/truetype/NerdFonts/Iosevka/IosevkaNerdFont-Regular.ttf";
     };
 
     kernelParams = ["splash"];
@@ -73,10 +83,52 @@
   programs.noctalia-greeter = {
     enable = true;
     settings = {
+      appearance = {
+        scheme = "Synced";
+        theme_mode = "dark";
+        password_style = "default";
+        hide_logo = true;
+        power_buttons_position = "bottom-right";
+        scheme_selector_position = "hidden";
+        corner_radius_scale = 0.0;
+        font_family = "Iosevka Nerd Font";
+
+        palette = {
+          primary = "#98a87c";
+          on_primary = "#101211";
+          secondary = "#7f9f9f";
+          on_secondary = "#101211";
+          tertiary = "#a8b98c";
+          on_tertiary = "#101211";
+          error = "#d08770";
+          on_error = "#101211";
+          surface = "#101211";
+          on_surface = "#c5c8c5";
+          surface_variant = "#1a1d1b";
+          on_surface_variant = "#7f9f9f";
+          outline = "#303630";
+          shadow = "#101211";
+          hover = "#7f9f9f";
+          on_hover = "#101211";
+        };
+
+        wallpaper = {
+          path = "color:#101211";
+          fill_mode = "crop";
+          fill_color = "#101211";
+        };
+      };
+
       cursor = {
         theme = "Bibata-Modern-Classic";
         size = 24;
         path = "${pkgs.bibata-cursors}/share/icons";
+      };
+
+      keyboard = {
+        layout = "ee(us),ru";
+        options = "grp:ctrl_space_toggle";
+        numlock = true;
       };
     };
   };

@@ -1,0 +1,141 @@
+# Palette shared with Waybar, Rofi, SwayNC, and the session controls.
+Window.SetBackgroundTopColor(0.062745, 0.070588, 0.066667);
+Window.SetBackgroundBottomColor(0.062745, 0.070588, 0.066667);
+
+font = "Iosevka Nerd Font 13";
+
+fun text_image(text, red, green, blue)
+  {
+    return Image.Text(text, red, green, blue, 1, font);
+  }
+
+fun center_sprite(sprite, image, y, z)
+  {
+    sprite.SetImage(image);
+    sprite.SetPosition(
+      Window.GetX() + Window.GetWidth() / 2 - image.GetWidth() / 2,
+      Window.GetY() + Window.GetHeight() * y - image.GetHeight() / 2,
+      z
+    );
+  }
+
+mode = Plymouth.GetMode();
+status_text = "[ booting ]";
+progress_enabled = 1;
+
+if (mode == "shutdown")
+  {
+    status_text = "[ shutting down ]";
+    progress_enabled = 0;
+  }
+
+if (mode == "reboot")
+  {
+    status_text = "[ rebooting ]";
+    progress_enabled = 0;
+  }
+
+title.image = text_image("[ nixos ]", 0.596078, 0.658824, 0.486275);
+title.sprite = Sprite();
+center_sprite(title.sprite, title.image, 0.46, 10);
+
+status.image = text_image(status_text, 0.772549, 0.784314, 0.772549);
+status.sprite = Sprite();
+center_sprite(status.sprite, status.image, 0.51, 10);
+
+progress.image = text_image("[=         ]", 0.596078, 0.658824, 0.486275);
+progress.sprite = Sprite();
+center_sprite(progress.sprite, progress.image, 0.56, 10);
+progress.sprite.SetOpacity(progress_enabled);
+
+message.sprite = Sprite();
+
+fun progress_frame(value)
+  {
+    local.frame = "[          ]";
+
+    if (value >= 0.10) frame = "[=         ]";
+    if (value >= 0.20) frame = "[==        ]";
+    if (value >= 0.30) frame = "[===       ]";
+    if (value >= 0.40) frame = "[====      ]";
+    if (value >= 0.50) frame = "[=====     ]";
+    if (value >= 0.60) frame = "[======    ]";
+    if (value >= 0.70) frame = "[=======   ]";
+    if (value >= 0.80) frame = "[========  ]";
+    if (value >= 0.90) frame = "[========= ]";
+    if (value >= 0.99) frame = "[==========]";
+
+    return frame;
+  }
+
+fun boot_progress_callback(time, progress_value)
+  {
+    if (progress_enabled)
+      {
+        local.image = text_image(
+          progress_frame(progress_value),
+          0.596078,
+          0.658824,
+          0.486275
+        );
+        center_sprite(progress.sprite, image, 0.56, 10);
+        progress.sprite.SetOpacity(1);
+      }
+  }
+
+Plymouth.SetBootProgressFunction(boot_progress_callback);
+
+fun display_normal_callback()
+  {
+    local.image = text_image(status_text, 0.772549, 0.784314, 0.772549);
+    center_sprite(status.sprite, image, 0.51, 10);
+    progress.sprite.SetOpacity(progress_enabled);
+  }
+
+Plymouth.SetDisplayNormalFunction(display_normal_callback);
+
+fun password_frame(bullets)
+  {
+    local.frame = "[          ]";
+
+    if (bullets >= 1) frame = "[*         ]";
+    if (bullets >= 2) frame = "[**        ]";
+    if (bullets >= 3) frame = "[***       ]";
+    if (bullets >= 4) frame = "[****      ]";
+    if (bullets >= 5) frame = "[*****     ]";
+    if (bullets >= 6) frame = "[******    ]";
+    if (bullets >= 7) frame = "[*******   ]";
+    if (bullets >= 8) frame = "[********  ]";
+    if (bullets >= 9) frame = "[********* ]";
+    if (bullets >= 10) frame = "[**********]";
+
+    return frame;
+  }
+
+fun display_password_callback(prompt, bullets)
+  {
+    local.label = text_image("[ unlock ]", 0.498039, 0.623529, 0.623529);
+    local.entry = text_image(password_frame(bullets), 0.596078, 0.658824, 0.486275);
+
+    center_sprite(status.sprite, label, 0.51, 10);
+    center_sprite(progress.sprite, entry, 0.56, 10);
+    progress.sprite.SetOpacity(1);
+  }
+
+Plymouth.SetDisplayPasswordFunction(display_password_callback);
+
+fun display_message_callback(message_text)
+  {
+    local.image = text_image(message_text, 0.498039, 0.623529, 0.623529);
+    center_sprite(message.sprite, image, 0.62, 10);
+    message.sprite.SetOpacity(1);
+  }
+
+Plymouth.SetDisplayMessageFunction(display_message_callback);
+
+fun hide_message_callback(message_text)
+  {
+    message.sprite.SetOpacity(0);
+  }
+
+Plymouth.SetHideMessageFunction(hide_message_callback);
