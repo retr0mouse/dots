@@ -4,6 +4,11 @@
   ...
 }: let
   mkScript = name: pkgs.writeShellScriptBin name (builtins.readFile ./clancy/${name}.sh);
+  mesaEgl = "__EGL_VENDOR_LIBRARY_FILENAMES=/run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json";
+  passthroughSafeGtkEnvironment = [
+    "GSK_RENDERER=ngl"
+    mesaEgl
+  ];
   vpnControl = pkgs.writeShellApplication {
     name = "vpn-control";
     runtimeInputs = [
@@ -110,14 +115,14 @@ in {
 
   xdg.configFile."systemd/user/wayland-wm@hyprland.desktop.service.d/10-amd-egl.conf".text = ''
     [Service]
-    Environment="__EGL_VENDOR_LIBRARY_FILENAMES=/run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json"
+    Environment="${mesaEgl}"
   '';
 
-  systemd.user.services.hyprpaper.Service.Environment = [
-    "__EGL_VENDOR_LIBRARY_FILENAMES=/run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json"
-  ];
+  systemd.user.services.hyprpaper.Service.Environment = [mesaEgl];
 
-  systemd.user.services.swaync.Service.Environment = [
-    "__EGL_VENDOR_LIBRARY_FILENAMES=/run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json"
-  ];
+  # Keep GTK's renderer on Mesa so desktop services do not claim the RTX that
+  # is reserved for VM passthrough.
+  systemd.user.services.swaync.Service.Environment = passthroughSafeGtkEnvironment;
+
+  systemd.user.services.swayosd.Service.Environment = passthroughSafeGtkEnvironment;
 }

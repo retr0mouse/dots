@@ -185,6 +185,10 @@ in {
   home-manager.users.${username}.imports = [../../../user/hosts/clancy.nix];
 
   networking.hostName = "clancy";
+
+  # Work around the AMDGPU custom brightness curve wrapping to zero near 100%.
+  boot.kernelParams = ["amdgpu.dcdebugmask=0x40000"];
+
   networking.wg-quick.interfaces = {
     wg0 = {
       autostart = false;
