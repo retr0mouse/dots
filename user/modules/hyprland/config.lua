@@ -211,7 +211,7 @@ hl.bind(caps .. " + Return", hl.dsp.exec_cmd(terminal))
 
 hl.bind(caps .. " + Space", hl.dsp.exec_cmd(menu))
 
-hl.bind("Pause", hl.dsp.exec_cmd("hyprlock"))
+hl.bind("SUPER + Escape", hl.dsp.exec_cmd("session-menu"))
 
 hl.bind(caps .. " + SHIFT + Return", hl.dsp.exec_cmd(browser))
 
