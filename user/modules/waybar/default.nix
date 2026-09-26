@@ -26,7 +26,7 @@ in {
 
         modules-left = [
           "group/workspaces"
-          "group/brightvol"
+          "group/performance"
         ];
 
         modules-center = [
@@ -36,7 +36,7 @@ in {
         ];
 
         modules-right = [
-          "group/performance"
+          "group/brightvol"
           "group/system"
         ];
 
