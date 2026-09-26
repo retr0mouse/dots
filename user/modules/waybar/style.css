@@ -4,6 +4,7 @@
 @define-color second-background #1a1d1b;
 @define-color text #c5c8c5;
 @define-color borders #303630;
+@define-color brackets #768076;
 @define-color focused #98a87c;
 @define-color hover #7f9f9f;
 @define-color urgent #d08770;
@@ -36,12 +37,12 @@ window#waybar.empty #window {
 #custom-openbracket,
 #custom-closebracket {
   margin: 0 4px;
-  color: @borders;
+  color: @brackets;
 }
 
 #custom-split {
   margin: 0 6px;
-  color: @borders;
+  color: @brackets;
 }
 
 button {
@@ -54,7 +55,7 @@ button {
 /* Active workspaces use emphasis instead of a block or underline. */
 
 #workspaces button {
-  padding: 0 5px;
+  padding: 0 8px;
   color: @text;
   background: transparent;
 }
@@ -65,9 +66,9 @@ button {
 }
 
 #workspaces button.active {
-  color: @focused;
+  color: @background;
   font-weight: bold;
-  background: transparent;
+  background: @focused;
 }
 
 #workspaces button.urgent {
@@ -95,7 +96,7 @@ button {
 
 #clock {
   min-width: 48px;
-  color: @focused;
+  color: @text;
   font-weight: bold;
 }
 
