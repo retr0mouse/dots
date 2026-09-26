@@ -13,16 +13,7 @@
     options = "--delete-older-than 3d";
   };
 
-  # Boot
-  boot = {
-    loader.systemd-boot.enable = true;
-    loader.timeout = 1;
-
-    kernelParams = [
-      "boot.shell_on_fail"
-    ];
-  };
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelParams = ["boot.shell_on_fail"];
 
   # Time / Locale
   time.timeZone = "Europe/Tallinn";

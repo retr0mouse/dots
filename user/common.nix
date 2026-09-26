@@ -6,6 +6,7 @@
   imports = [
     ./modules/git.nix
     ./modules/neovim
+    ./modules/terminal-tools
     ./modules/zsh.nix
   ];
 
@@ -13,12 +14,9 @@
     inherit username;
     homeDirectory = "/home/${username}";
     packages = with pkgs; [
-      btop
-      fzf
       gh
       jq
       tree
-      yazi
     ];
   };
 
@@ -31,6 +29,11 @@
       Compression = true;
       ServerAliveInterval = 60;
     };
+  };
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
   };
 
   programs.home-manager.enable = true;

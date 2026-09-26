@@ -177,19 +177,22 @@ hl.window_rule({
 })
 
 -- Move and resize windows with mouse
-hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true }) -- ALT + LMB: Move a window
-hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true }) -- ALT + RMB: Resize a window
+-- Caps emits Super_R, but mouse binds only accept modifier masks, not side-specific keysyms.
+hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true })
+hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+local caps = "CTRL + ALT + SUPER"
 
 -- Move windows with keyboard
 
-hl.bind("SUPER + SHIFT" .. " + " .. "H", hl.dsp.window.move({ direction = "l" }))
-hl.bind("SUPER + SHIFT" .. " + " .. "J", hl.dsp.window.move({ direction = "d" }))
-hl.bind("SUPER + SHIFT" .. " + " .. "K", hl.dsp.window.move({ direction = "u" }))
-hl.bind("SUPER + SHIFT" .. " + " .. "L", hl.dsp.window.move({ direction = "r" }))
+hl.bind(caps .. " + SHIFT + H", hl.dsp.window.move({ direction = "l" }))
+hl.bind(caps .. " + SHIFT + J", hl.dsp.window.move({ direction = "d" }))
+hl.bind(caps .. " + SHIFT + K", hl.dsp.window.move({ direction = "u" }))
+hl.bind(caps .. " + SHIFT + L", hl.dsp.window.move({ direction = "r" }))
 
 -- Resize windows using keyboard
 -- Switch to a submap called `resize`.
-hl.bind("SUPER + R", hl.dsp.submap("resize"))
+hl.bind(caps .. " + R", hl.dsp.submap("resize"))
 
 -- Start a submap called "resize".
 hl.define_submap("resize", function()
@@ -205,84 +208,84 @@ end)
 
 -- Keybinds further down will be global again...
 
-hl.bind("SUPER" .. " + " .. "Return", hl.dsp.exec_cmd(terminal))
+hl.bind(caps .. " + Return", hl.dsp.exec_cmd(terminal))
 
-hl.bind("SUPER" .. " + " .. "Space", hl.dsp.exec_cmd(menu))
+hl.bind(caps .. " + Space", hl.dsp.exec_cmd(menu))
 
 hl.bind("Pause", hl.dsp.exec_cmd("hyprlock"))
 
-hl.bind("SUPER + SHIFT" .. " + " .. "Return", hl.dsp.exec_cmd(browser))
+hl.bind(caps .. " + SHIFT + Return", hl.dsp.exec_cmd(browser))
 
-hl.bind("SUPER + SHIFT" .. " + " .. "Q", hl.dsp.window.close())
+hl.bind("SUPER + SHIFT + Q", hl.dsp.window.close())
 
-hl.bind("SUPER" .. " + " .. "E", hl.dsp.exec_cmd("kitty -e yazi"))
+hl.bind("SUPER + E", hl.dsp.exec_cmd("kitty -e yazi"))
 
-hl.bind("SUPER" .. " + " .. "V", hl.dsp.window.float())
+hl.bind(caps .. " + V", hl.dsp.window.float())
 
-hl.bind("SUPER" .. " + " .. "F", hl.dsp.window.fullscreen())
+hl.bind(caps .. " + F", hl.dsp.window.fullscreen())
 
-hl.bind("SUPER" .. " + " .. "P", hl.dsp.window.pseudo())
+hl.bind(caps .. " + P", hl.dsp.window.pseudo())
 
 -- Move focus
 
-hl.bind("SUPER" .. " + " .. "H", hl.dsp.focus({ direction = "left" }))
+hl.bind(caps .. " + H", hl.dsp.focus({ direction = "left" }))
 
-hl.bind("SUPER" .. " + " .. "L", hl.dsp.focus({ direction = "right" }))
+hl.bind(caps .. " + L", hl.dsp.focus({ direction = "right" }))
 
-hl.bind("SUPER" .. " + " .. "K", hl.dsp.focus({ direction = "up" }))
+hl.bind(caps .. " + K", hl.dsp.focus({ direction = "up" }))
 
-hl.bind("SUPER" .. " + " .. "J", hl.dsp.focus({ direction = "down" }))
+hl.bind(caps .. " + J", hl.dsp.focus({ direction = "down" }))
 
 -- Workspaces
 
-hl.bind("SUPER" .. " + " .. 1, hl.dsp.focus({ workspace = 1 }))
+hl.bind(caps .. " + " .. 1, hl.dsp.focus({ workspace = 1 }))
 
-hl.bind("SUPER" .. " + " .. 2, hl.dsp.focus({ workspace = 2 }))
+hl.bind(caps .. " + " .. 2, hl.dsp.focus({ workspace = 2 }))
 
-hl.bind("SUPER" .. " + " .. 3, hl.dsp.focus({ workspace = 3 }))
+hl.bind(caps .. " + " .. 3, hl.dsp.focus({ workspace = 3 }))
 
-hl.bind("SUPER" .. " + " .. 4, hl.dsp.focus({ workspace = 4 }))
+hl.bind(caps .. " + " .. 4, hl.dsp.focus({ workspace = 4 }))
 
-hl.bind("SUPER" .. " + " .. 5, hl.dsp.focus({ workspace = 5 }))
+hl.bind(caps .. " + " .. 5, hl.dsp.focus({ workspace = 5 }))
 
-hl.bind("SUPER" .. " + " .. 6, hl.dsp.focus({ workspace = 6 }))
+hl.bind(caps .. " + " .. 6, hl.dsp.focus({ workspace = 6 }))
 
-hl.bind("SUPER" .. " + " .. 7, hl.dsp.focus({ workspace = 7 }))
+hl.bind(caps .. " + " .. 7, hl.dsp.focus({ workspace = 7 }))
 
-hl.bind("SUPER" .. " + " .. 8, hl.dsp.focus({ workspace = 8 }))
+hl.bind(caps .. " + " .. 8, hl.dsp.focus({ workspace = 8 }))
 
-hl.bind("SUPER" .. " + " .. 9, hl.dsp.focus({ workspace = 9 }))
+hl.bind(caps .. " + " .. 9, hl.dsp.focus({ workspace = 9 }))
 
-hl.bind("SUPER" .. " + " .. 0, hl.dsp.focus({ workspace = 10 }))
+hl.bind(caps .. " + " .. 0, hl.dsp.focus({ workspace = 10 }))
 
-hl.bind("SUPER" .. " + " .. "N", hl.dsp.workspace.toggle_special(nil))
+hl.bind(caps .. " + N", hl.dsp.workspace.toggle_special(nil))
 
 -- Move window to workspace
 
-hl.bind("SUPER + SHIFT" .. " + " .. 1, hl.dsp.window.move({ workspace = 1 }))
+hl.bind(caps .. " + SHIFT + " .. 1, hl.dsp.window.move({ workspace = 1 }))
 
-hl.bind("SUPER + SHIFT" .. " + " .. 2, hl.dsp.window.move({ workspace = 2 }))
+hl.bind(caps .. " + SHIFT + " .. 2, hl.dsp.window.move({ workspace = 2 }))
 
-hl.bind("SUPER + SHIFT" .. " + " .. 3, hl.dsp.window.move({ workspace = 3 }))
+hl.bind(caps .. " + SHIFT + " .. 3, hl.dsp.window.move({ workspace = 3 }))
 
-hl.bind("SUPER + SHIFT" .. " + " .. 4, hl.dsp.window.move({ workspace = 4 }))
+hl.bind(caps .. " + SHIFT + " .. 4, hl.dsp.window.move({ workspace = 4 }))
 
-hl.bind("SUPER + SHIFT" .. " + " .. 5, hl.dsp.window.move({ workspace = 5 }))
+hl.bind(caps .. " + SHIFT + " .. 5, hl.dsp.window.move({ workspace = 5 }))
 
-hl.bind("SUPER + SHIFT" .. " + " .. 6, hl.dsp.window.move({ workspace = 6 }))
+hl.bind(caps .. " + SHIFT + " .. 6, hl.dsp.window.move({ workspace = 6 }))
 
-hl.bind("SUPER + SHIFT" .. " + " .. 7, hl.dsp.window.move({ workspace = 7 }))
+hl.bind(caps .. " + SHIFT + " .. 7, hl.dsp.window.move({ workspace = 7 }))
 
-hl.bind("SUPER + SHIFT" .. " + " .. 8, hl.dsp.window.move({ workspace = 8 }))
+hl.bind(caps .. " + SHIFT + " .. 8, hl.dsp.window.move({ workspace = 8 }))
 
-hl.bind("SUPER + SHIFT" .. " + " .. 9, hl.dsp.window.move({ workspace = 9 }))
+hl.bind(caps .. " + SHIFT + " .. 9, hl.dsp.window.move({ workspace = 9 }))
 
-hl.bind("SUPER + SHIFT" .. " + " .. 0, hl.dsp.window.move({ workspace = 10 }))
+hl.bind(caps .. " + SHIFT + " .. 0, hl.dsp.window.move({ workspace = 10 }))
 
-hl.bind("SUPER + SHIFT" .. " + " .. "N", hl.dsp.window.move({ workspace = "special" }))
+hl.bind(caps .. " + SHIFT + N", hl.dsp.window.move({ workspace = "special" }))
 
 -- Screenshot
-hl.bind("SUPER + SHIFT" .. " + " .. "S", hl.dsp.exec_cmd(screenshot))
+hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd(screenshot))
 
 -- Ignore maximize requests from apps. You'll probably like this.
 

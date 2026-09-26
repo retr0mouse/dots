@@ -1,32 +1,37 @@
-{...}: {
+{
+  config,
+  lib,
+  ...
+}: let
+  identityActive = config.dotfiles.deployment.activateIdentity;
+  lanInterface = config.dotfiles.hardware.lanInterface;
+in {
   boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
-  networking.hostName = "nico";
   networking.networkmanager.enable = true;
 
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [
+    allowedTCPPorts = lib.optionals identityActive [
       443
     ];
-    allowedUDPPorts = [
+    allowedUDPPorts = lib.optionals identityActive [
       51820
     ];
-    trustedInterfaces = [
-      "lo"
-      "enp3s0"
-      "wg0"
-    ];
-    extraCommands = ''
+    trustedInterfaces =
+      ["lo"]
+      ++ lib.optionals (lanInterface != null) [lanInterface]
+      ++ lib.optionals identityActive ["wg0"];
+    extraCommands = lib.mkIf identityActive ''
       iptables -A FORWARD -i wg0 -d 192.168.0.0/24 -j ACCEPT
       iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
     '';
-    extraStopCommands = ''
+    extraStopCommands = lib.mkIf identityActive ''
       iptables -D FORWARD -i wg0 -d 192.168.0.0/24 -j ACCEPT 2>/dev/null || true
       iptables -D FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT 2>/dev/null || true
     '';
   };
 
-  networking.wireguard.interfaces.wg0 = {
+  networking.wireguard.interfaces.wg0 = lib.mkIf identityActive {
     ips = [
       "10.10.0.1/24"
     ];
@@ -52,7 +57,7 @@
     ];
   };
 
-  security.acme = {
+  security.acme = lib.mkIf identityActive {
     acceptTerms = true;
     defaults.email = "daniil.sharin667@gmail.com";
     certs."voldsoy.duckdns.org" = {
@@ -64,9 +69,9 @@
     };
   };
 
-  users.users.nginx.extraGroups = ["acme"];
+  users.users.nginx.extraGroups = lib.mkIf identityActive ["acme"];
 
-  services.duckdns = {
+  services.duckdns = lib.mkIf identityActive {
     enable = true;
 
     domains = [
@@ -76,7 +81,7 @@
     tokenFile = "/etc/secrets/duckdns-token";
   };
 
-  services.nginx = {
+  services.nginx = lib.mkIf identityActive {
     enable = true;
 
     virtualHosts."immich.voldsoy.duckdns.org" = {

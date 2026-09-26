@@ -1,38 +1,44 @@
 # NixOS configuration
 
-This is a declarative NixOS and Home Manager configuration built around two
-logical machine roles:
+This is a declarative NixOS and Home Manager configuration built around
+transferable logical roles:
 
 - **Clancy** is the desktop role.
 - **Nico** is the server role.
 
-Those names describe responsibilities, not permanent pieces of hardware.
-Replacing a laptop should mean moving the Clancy role to the new machine and
-updating only its hardware-specific layer. The old machine can become Nico, or
-another role, without dragging desktop assumptions into the server
-configuration.
+Those names describe responsibilities and network identities, not permanent
+pieces of hardware. A deployment explicitly assigns a role to a physical
+machine. Replacing a laptop means adding the new machine facts and changing
+that assignment; the Clancy role itself stays unchanged. The old machine can
+then become Nico, Backup, or another role.
 
 ## Design principles
 
-### Configure roles, not devices
+### Compose roles and machines
 
-Most configuration belongs to a reusable role. A desktop should receive the
-desktop environment, audio, networking, applications, and user session. A
-server should receive remote administration and hosted services without
-inheriting graphical or laptop-specific behavior.
+The configuration distinguishes two independent concepts:
+
+- A **role** is a transferable logical identity and complete job, such as the
+  Clancy desktop or Nico server.
+- A **machine** is one physical installation such as the current Asus laptop.
+
+Roles own their system behavior, user environment, applications, workloads,
+hostname, and network identity. Machines provide hardware and installation
+facts.
 
 Only details that genuinely describe one physical installation belong to the
-host layer. Examples include:
+machine layer. Examples include:
 
 - Generated hardware configuration
 - Disk UUIDs
+- Network interface names
 - GPU bus addresses and driver quirks
-- WireGuard identity and network addresses
 - VM device passthrough
-- Host-specific mounts and service data paths
+- Hardware-specific mounts
+- Lid, battery, backlight, and power behavior
 
-This keeps hardware replacement local: preserve the role, replace the host
-details.
+Conversely, a hostname, WireGuard identity, DNS name, media stack, or Minecraft
+server follows its named role to replacement hardware.
 
 ### Keep shared layers genuinely shared
 
@@ -40,15 +46,15 @@ The common system layer is intentionally small. It contains baseline NixOS
 policy that is appropriate everywhere, such as locale, time synchronization,
 garbage collection, the login shell, and core Nix settings.
 
-Desktop behavior belongs to the desktop role. Server behavior belongs to the
-server role. Workloads that run on only one server stay with that server rather
-than becoming part of the meaning of “server.”
+Desktop behavior belongs directly to Clancy, and server behavior belongs
+directly to Nico. A future Backup role will own its own behavior rather than
+inheriting Nico's media or game services.
 
 The same rule applies to Home Manager:
 
 - Shared terminal and editor configuration is available everywhere.
-- The graphical profile is reusable across desktop PCs and laptops.
-- Hardware-dependent widgets and scripts are opt-in host additions.
+- Clancy's graphical configuration moves with the role.
+- Hardware-dependent widgets and scripts follow machine capabilities.
 
 ### Organize by ownership
 
@@ -56,24 +62,55 @@ The important boundary is who should receive a setting:
 
 | Layer | Owns |
 | --- | --- |
-| Common system | Baseline policy for every machine |
-| Desktop role | Graphical services and capabilities expected on every desktop |
-| Server role | Server-wide policy such as key-based SSH access |
-| Host system | Hardware, storage, networking identity, and host-only workloads |
+| Common system | Baseline policy for every deployment |
+| Named role | System behavior, user environment, identity, and workloads |
+| Physical machine | Hardware, storage devices, drivers, and installation quirks |
 | Common user | Shell, Git, editor, SSH client, and shared CLI tools |
-| Desktop user | Graphical applications and desktop-session services |
-| Host user | Hardware-specific desktop behavior and helper scripts |
+| Role-machine integration | Hardware-specific behavior needed only for one role |
 | Program module | Configuration that belongs to one program or cohesive service |
 
 If a setting contains a PCI address, disk UUID, VM name, or machine-specific
-device path, it is almost certainly host configuration. If it starts a media
-server, game server, or monitoring stack on only one host, it is a host
-workload rather than generic server policy.
+device path, it is almost certainly machine configuration. A workload that
+defines what Nico does belongs directly to Nico.
 
-## Desktop role
+### Deployment inventory
 
-Clancy provides a Wayland desktop centered around Hyprland. The reusable
-desktop role includes:
+`flake.nix` is the single composition point. It declares named roles, physical
+machines, and active deployments. The current assignments are:
+
+```text
+clancy = Clancy role + asus-ga503 machine
+nico   = Nico role   + msi-gp62m-7rdx machine
+```
+
+NixOS and Home Manager are composed in parallel from the same assignment. The
+machine publishes a small typed hardware-capability set, and Clancy's Home
+Manager configuration reads it through `osConfig`; battery, backlight,
+power-profile, and GPU widgets therefore do not need to be declared twice.
+
+The inventory also supports machine integrations selected by role. This
+handles settings that are physical facts but only make sense in one use: the
+MSI GP62M 7RDX's no-sleep policy is loaded only when it provides Nico, while
+the Asus VM, desktop helpers, and renderer workarounds are loaded only when it
+provides Clancy. Reassigning the hardware does not drag its previous job along
+with it.
+
+The relevant source layout is:
+
+```text
+system/common.nix
+system/roles/             complete Clancy and Nico system behavior
+system/features/          reusable opt-in hardware and service capabilities
+system/machines/          physical hardware and installation facts
+user/common.nix
+user/roles/               complete user behavior for Clancy and Nico
+user/machines/            exceptional machine-specific user integration
+user/modules/             one program or cohesive service per module
+```
+
+## Clancy desktop role
+
+Clancy is a Wayland desktop role centered around Hyprland. It includes:
 
 - Hyprland with UWSM and XWayland support
 - A graphical greeter and XDG desktop portals
@@ -85,7 +122,7 @@ desktop role includes:
 - Shared fonts and multilingual keyboard layouts
 - Keyboard remapping through xremap
 
-The Home Manager desktop profile adds:
+Clancy's Home Manager configuration adds:
 
 - Hyprland user configuration
 - Waybar
@@ -99,9 +136,9 @@ The Home Manager desktop profile adds:
 
 ### Hardware capabilities are opt-in
 
-The graphical profile is intended to work on either a desktop PC or a laptop.
-It does not assume that every machine has a battery, backlight, power profiles,
-or multiple GPUs.
+The Clancy role is intended to work on either a desktop PC or a laptop. It does
+not assume that every machine has a battery, backlight, power profiles, or
+multiple GPUs.
 
 Waybar exposes independent capability switches for:
 
@@ -111,13 +148,15 @@ Waybar exposes independent capability switches for:
 - Integrated GPU usage
 - Discrete GPU usage
 
-A host enables only the widgets supported by its hardware and supplies any
-matching helper commands. This prevents a future desktop from inheriting
-broken laptop widgets or hard-coded GPU paths.
+The assigned machine publishes only the capabilities supported by its hardware.
+Home Manager derives the widgets from those capabilities. This prevents a
+future Framework or desktop PC from inheriting Asus battery widgets, Nvidia
+scripts, or hard-coded GPU paths.
 
 ### Virtualization and GPU passthrough
 
-The desktop role supports a host-specific Windows virtualization layer using:
+The current Asus machine provides a hardware-specific Windows virtualization
+layer using:
 
 - libvirt and virt-manager
 - VFIO GPU passthrough
@@ -127,17 +166,16 @@ The desktop role supports a host-specific Windows virtualization layer using:
   opens Looking Glass, requests a clean shutdown, and verifies that the GPU
   returns to Linux
 
-The generic desktop role does not know the VM name, PCI topology, GPU driver,
-or KVMFR ownership rules. Those remain in Clancy’s host layer and must be
-reviewed whenever the desktop hardware changes.
+The core Clancy role does not know the VM name, PCI topology, GPU driver, or
+KVMFR ownership rules. Those remain in the Asus-and-Clancy integration and do
+not follow Clancy onto incompatible hardware.
 
-## Server role
+## Nico server role
 
-Nico is a headless service host. The reusable server role adds key-based SSH
-administration to the common baseline. It does not define what applications a
-server must run; those remain host workloads.
+Nico is a headless service role. It adds key-based SSH administration and its
+server policy to the common baseline.
 
-The server host is composed from several cohesive workload capabilities.
+The Nico role is composed from several cohesive workload capabilities.
 
 ### Networking and ingress
 
@@ -205,15 +243,14 @@ proxy and TLS boundary as the application stack.
 
 ## User environment
 
-The shared Home Manager profile keeps the interactive environment consistent
-across desktop and server machines.
+The common Home Manager layer keeps the interactive environment consistent
+across roles.
 
-Each host selects the username that receives this profile. The profile derives
-the account name and home directory from that choice instead of assuming a
-fixed username, so moving a role to new hardware does not require preserving
-the old machine's account name.
+Each deployment selects the username that receives its composed Home Manager
+configuration. The common layer derives the account name and home directory
+from that choice instead of embedding it throughout the modules.
 
-The shared profile includes:
+The common layer includes:
 
 - Zsh and common aliases
 - Git and Delta
@@ -222,8 +259,9 @@ The shared profile includes:
 - SSH client defaults
 - Common terminal utilities
 
-The server user profile stays intentionally small and adds only tools useful
-for administering its workloads. It does not import graphical modules.
+Nico's user role stays intentionally small and does not import graphical
+modules. Its Minecraft administration tools belong to Nico, not to a future
+Backup role.
 
 Home Manager and NixOS `stateVersion` values are compatibility baselines, not
 release channels. They should not be changed merely because the inputs were
@@ -231,9 +269,12 @@ updated.
 
 ## Secrets
 
-Secrets are machine state, not configuration source. The repository stores
-only absolute paths or runtime placeholders; actual values live on the target
-machine outside Git and outside the Nix store.
+Plaintext secrets are deployment state, not configuration source. The
+repository stores only absolute paths or runtime placeholders; actual values
+live on the target machine outside Git and outside the Nix store. Role identity
+secrets such as WireGuard keys must move deliberately during a role transfer,
+while hardware-bound secrets such as disk-encryption keys remain with the
+physical machine.
 
 Secret-bearing integrations include:
 
@@ -277,14 +318,14 @@ nix flake check path:. --no-build
 Using `path:.` includes new untracked files during development. A Git-backed
 flake reference includes only files known to Git.
 
-Build a role without activating it:
+Build an active deployment without activating it:
 
 ```sh
 sudo nixos-rebuild build --flake .#clancy
 sudo nixos-rebuild build --flake .#nico
 ```
 
-Activate the role matching the current hostname:
+Activate the deployment matching the current logical hostname:
 
 ```sh
 sudo nixos-rebuild switch --flake .#$(hostname)
@@ -306,20 +347,33 @@ nix flake check path:. --no-build
 
 ## Replacing hardware or adding roles
 
-When replacing a desktop or server, keep the logical role and change only the
-host-specific facts:
+To replace the machine currently providing a role:
 
-1. Generate or update the hardware configuration.
-2. Review disks, network interfaces, GPU identifiers, and driver choices.
-3. Recreate required machine-local secrets.
-4. Reapply only the host-specific Home Manager capabilities supported by the
-   new hardware.
-5. Build and verify the role before switching.
+1. Add a new `system/machines/<machine>/` directory with generated hardware
+   configuration and only the new machine's physical facts.
+2. Add the machine to `machines` in `flake.nix`.
+3. Add a temporary deployment such as `clancy-next` using the existing Clancy
+   role, the new machine, and `activateIdentity = false`.
+4. Build and test the staged deployment. Its logical WireGuard, DuckDNS, ACME,
+   nginx, and related UI identity controls remain inactive, so it can coexist
+   with the active role.
+5. Restore user and service state separately; declarative configuration does
+   not move mutable data.
+6. Stop the old role, change the active deployment's machine assignment, and
+   transfer its secrets and network identity.
+7. Rebuild the normal role output and only then repurpose the old machine.
 
-When adding another machine, start with the smallest appropriate role and add
-host-local workload modules. Do not expand a shared layer merely to avoid one
-extra import.
+Role contracts are checked during evaluation where practical. For example,
+Nico requires its assigned machine to provide the stable `/data` filesystem;
+the disk device and filesystem details still remain in the machine layer. The
+inventory also rejects multiple deployments that simultaneously claim the same
+active role identity; staged replacements must keep `activateIdentity = false`.
+
+A future Backup role should import its own backup repository capabilities. It
+will receive the common system and user layers automatically, but must not
+inherit Nico's media, Minecraft, DNS, or ingress workloads. Any behavior that
+multiple roles genuinely share can be extracted into an opt-in feature.
 
 The test for promoting a setting is simple: every consumer of the higher layer
 must genuinely want it. If that is uncertain, keep the setting closer to the
-host or program that owns it.
+role, machine, or program that owns it.

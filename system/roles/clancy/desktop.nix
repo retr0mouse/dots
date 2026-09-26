@@ -14,8 +14,14 @@
   '';
 in {
   imports = [
-    ./common.nix
     inputs.xremap-flake.nixosModules.default
+    inputs.noctalia-greeter.nixosModules.default
+  ];
+
+  nixpkgs.overlays = [
+    (final: _prev: {
+      hyprmoncfg = final.callPackage ../../../packages/hyprmoncfg.nix {};
+    })
   ];
 
   # Input / Key remapping
@@ -28,20 +34,48 @@ in {
     watch = true;
 
     config = {
-      virtual_modifiers = ["CapsLock"];
+      modmap = [
+        {
+          remap.CapsLock = "Super_R";
+        }
+      ];
       keymap = [
         {
           remap = {
-            "CapsLock-i" = "Up";
-            "CapsLock-j" = "Left";
-            "CapsLock-k" = "Down";
-            "CapsLock-l" = "Right";
+            "Super_R-w" = "Up";
+            "Super_R-a" = "Left";
+            "Super_R-s" = "Down";
+            "Super_R-d" = "Right";
 
-            "CapsLock-m" = "Home";
-            "CapsLock-dot" = "End";
+            "Super_R-z" = "Home";
+            "Super_R-c" = "End";
 
-            "CapsLock-u" = "C-Left";
-            "CapsLock-o" = "C-Right";
+            "Super_R-q" = "C-Left";
+            "Super_R-e" = "C-Right";
+
+            "Super_R-h" = "C-A-W-h";
+            "Super_R-j" = "C-A-W-j";
+            "Super_R-k" = "C-A-W-k";
+            "Super_R-l" = "C-A-W-l";
+
+            "Super_R-r" = "C-A-W-r";
+            "Super_R-enter" = "C-A-W-enter";
+            "Super_R-space" = "C-A-W-space";
+            "Super_R-v" = "C-A-W-v";
+            "Super_R-f" = "C-A-W-f";
+            "Super_R-p" = "C-A-W-p";
+            "Super_R-n" = "C-A-W-n";
+
+            "Super_R-1" = "C-A-W-1";
+            "Super_R-2" = "C-A-W-2";
+            "Super_R-3" = "C-A-W-3";
+            "Super_R-4" = "C-A-W-4";
+            "Super_R-5" = "C-A-W-5";
+            "Super_R-6" = "C-A-W-6";
+            "Super_R-7" = "C-A-W-7";
+            "Super_R-8" = "C-A-W-8";
+            "Super_R-9" = "C-A-W-9";
+            "Super_R-0" = "C-A-W-0";
           };
         }
       ];

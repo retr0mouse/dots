@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   lib,
   ...
@@ -26,16 +27,6 @@
 
   services.qbittorrent = {
     enable = true;
-  };
-
-  fileSystems."/data" = {
-    device = "/dev/disk/by-uuid/efee3c35-c283-4091-9a72-5df4cfcb2412";
-    fsType = "ext4";
-    options = [
-      "noatime"
-      "nofail"
-      "x-systemd.device-timeout=5s"
-    ];
   };
 
   systemd.tmpfiles.rules = [
@@ -118,14 +109,16 @@
 
     mediaLocation = "/data/immich/library";
 
-    settings = {
-      server.externalDomain = "https://immich.voldsoy.duckdns.org";
-
-      ffmpeg = {
-        accel = "nvenc";
-        accelDecode = true;
+    settings =
+      {
+        server.externalDomain = "https://immich.voldsoy.duckdns.org";
+      }
+      // lib.optionalAttrs (config.dotfiles.hardware.videoAcceleration != null) {
+        ffmpeg = {
+          accel = config.dotfiles.hardware.videoAcceleration;
+          accelDecode = true;
+        };
       };
-    };
   };
 
   users.users.immich = {

@@ -2,10 +2,10 @@
   config,
   lib,
   pkgs,
-  inputs,
   username,
   ...
 }: let
+  identityActive = config.dotfiles.deployment.activateIdentity;
   wireguardHomeNetworkFile = "/etc/secrets/wireguard-home-network.env";
   wireguardUnit = "wg-quick-wg0.service";
   wireguardDns = "10.10.0.1";
@@ -45,9 +45,6 @@
     exec 9>"${wireguardPolicyLock}"
     ${pkgs.util-linux}/bin/flock 9
 
-    wifi_uuid="$(${pkgs.networkmanager}/bin/nmcli \
-      -g GENERAL.CON-UUID \
-      device show wlp4s0 2>/dev/null || true)"
     connection_uuid="$(${getPrimaryConnectionUuid})"
     connectivity="$(${pkgs.networkmanager}/bin/nmcli \
       -t \
@@ -57,7 +54,14 @@
       | ${pkgs.gawk}/bin/awk 'NR == 1 { print $3 }')"
     default_interface="$(${pkgs.iproute2}/bin/ip -4 route show default \
       | ${pkgs.gawk}/bin/awk 'NR == 1 { print $5 }')"
+    wifi_uuid=""
     gateway_mac=""
+
+    if [[ -n "$default_interface" ]]; then
+      wifi_uuid="$(${pkgs.networkmanager}/bin/nmcli \
+        -g GENERAL.CON-UUID \
+        device show "$default_interface" 2>/dev/null || true)"
+    fi
 
     if [[ -n "$default_gateway" && -n "$default_interface" ]]; then
       gateway_mac="$(${pkgs.iproute2}/bin/ip neigh show \
@@ -163,58 +167,43 @@
     fi
 
     echo "WireGuard failed its DNS check and was rolled back" >&2
-    exit 0
+    exit 1
   '';
 
   wireguardDispatcher = pkgs.writeShellScript "wireguard-dispatcher" ''
     case "''${2:-}" in
       up|down|connectivity-change)
-        ${pkgs.systemd}/bin/systemctl --no-block restart wireguard-auto.service
+        ${pkgs.systemd}/bin/systemctl --no-block start wireguard-auto.service
         ;;
     esac
   '';
 in {
-  imports = [
-    ../../modules/desktop.nix
-    ./hardware-configuration.nix
-    ./vfio.nix
-    ./looking-glass.nix
-    inputs.nixos-hardware.nixosModules.asus-zephyrus-ga503
-  ];
+  imports = [./desktop.nix];
 
-  home-manager.users.${username}.imports = [../../../user/hosts/clancy.nix];
+  networking.wg-quick.interfaces.wg0 = lib.mkIf identityActive {
+    autostart = false;
+    address = ["10.10.0.6/32"];
+    dns = ["10.10.0.1"];
+    privateKeyFile = "/etc/wireguard/privatekey";
 
-  networking.hostName = "clancy";
-
-  # Work around the AMDGPU custom brightness curve wrapping to zero near 100%.
-  boot.kernelParams = ["amdgpu.dcdebugmask=0x40000"];
-
-  networking.wg-quick.interfaces = {
-    wg0 = {
-      autostart = false;
-      address = ["10.10.0.6/32"];
-      dns = ["10.10.0.1"];
-      privateKeyFile = "/etc/wireguard/privatekey";
-
-      peers = [
-        {
-          publicKey = "H/aACRc0usVuOYhIQrD4hYQKU7xePHWEwkX91Wm/yFI=";
-          allowedIPs = ["10.10.0.0/24" "192.168.0.0/24"];
-          endpoint = "voldsoy.duckdns.org:51820";
-          persistentKeepalive = 25;
-        }
-      ];
-    };
+    peers = [
+      {
+        publicKey = "H/aACRc0usVuOYhIQrD4hYQKU7xePHWEwkX91Wm/yFI=";
+        allowedIPs = ["10.10.0.0/24" "192.168.0.0/24"];
+        endpoint = "voldsoy.duckdns.org:51820";
+        persistentKeepalive = 25;
+      }
+    ];
   };
 
-  networking.networkmanager.dispatcherScripts = [
+  networking.networkmanager.dispatcherScripts = lib.optionals identityActive [
     {
       source = wireguardDispatcher;
       type = "basic";
     }
   ];
 
-  systemd.services.wireguard-auto = {
+  systemd.services.wireguard-auto = lib.mkIf identityActive {
     description = "Apply the automatic WireGuard home/away policy";
     wants = ["NetworkManager.service"];
     after = ["NetworkManager.service"];
@@ -226,7 +215,7 @@ in {
     };
   };
 
-  systemd.services.wireguard-toggle = {
+  systemd.services.wireguard-toggle = lib.mkIf identityActive {
     description = "Toggle WireGuard with DNS health checking";
     wants = ["NetworkManager.service"];
     after = ["NetworkManager.service"];
@@ -236,7 +225,7 @@ in {
     };
   };
 
-  security.polkit.extraConfig = ''
+  security.polkit.extraConfig = lib.optionalString identityActive ''
     polkit.addRule(function(action, subject) {
       if (
         action.id == "org.freedesktop.systemd1.manage-units" &&
@@ -250,52 +239,4 @@ in {
       }
     });
   '';
-
-  services.asusd.enable = true;
-  services.power-profiles-daemon.enable = true;
-  services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
-
-  services.libinput = {
-    enable = true;
-    touchpad.naturalScrolling = true;
-  };
-
-  services.xserver.enable = true;
-
-  services.udev.extraRules = ''
-    KERNEL=="card*", \
-    KERNELS=="0000:06:00.0", \
-    SUBSYSTEM=="drm", \
-    SUBSYSTEMS=="pci", \
-    SYMLINK+="dri/amd-igpu"
-  '';
-
-  services.xserver.videoDrivers = ["amdgpu" "nvidia"];
-
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = true;
-    powerManagement.finegrained = true;
-
-    open = true;
-    nvidiaSettings = true;
-
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-
-    prime = {
-      amdgpuBusId = lib.mkForce "PCI:6:0:0";
-      nvidiaBusId = "PCI:1:0:0";
-
-      offload = {
-        enable = true;
-        enableOffloadCmd = true;
-      };
-    };
-  };
-
-  hardware.graphics.extraPackages = with pkgs; [
-    mesa
-  ];
-
-  system.stateVersion = "25.11";
 }

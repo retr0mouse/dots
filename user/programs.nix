@@ -13,6 +13,9 @@
     # core runtimes / CLI utilities
     speedtest-cli # Speedtest CLI
     codex # AI
+    nodejs # runtime for Pi packages
+    pi-coding-agent # AI agent harness
+    tmux # terminal multiplexer (Pi subagents)
 
     # terminal / UI apps
     kitty-themes # Kitty color scheme collection
@@ -21,7 +24,6 @@
     inputs.wlctl.packages.${pkgs.stdenv.hostPlatform.system}.default # network TUI
 
     # desktop / communication apps
-    discord # chat/voice platform
     telegram-desktop # Telegram messenger
     anki-bin # spaced repetition flashcards
     obs-studio # streaming/recording software
@@ -39,7 +41,6 @@
     # system utilities
     libnotify # desktop notifications CLI (notify-send)
     playerctl # media control CLI (play/pause etc.)
-    brightnessctl # screen brightness control
     wl-clipboard # Wayland clipboard tools (wl-copy/paste)
     cliphist # clipboard history manager
     sl # fun terminal animation (train)
@@ -56,6 +57,7 @@
     gamescope # gaming compositor (Steam/Proton use)
 
     # office / productivity
+    obsidian # Markdown knowledge base and notes
     libreoffice-qt # office suite (documents/spreadsheets/etc.)
     hunspell # spell checker engine
     hunspellDicts.ru_RU # Russian dictionary for hunspell
@@ -83,6 +85,5 @@
 
     # miscellaneous / experiments
     waypaper # wallpaper picker frontend
-    wireguard-tools # tools for wireguard
   ];
 }
