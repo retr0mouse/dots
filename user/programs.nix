@@ -52,6 +52,7 @@
     slurp # region selector (screenshots)
     grim # screenshot tool for Wayland
     swappy # screenshot annotation tool
+    hyprpicker # freeze the desktop during screenshot selection
     wf-recorder # screen recording tool (Wayland)
     hyprpaper # wallpaper daemon for Hyprland
     gamescope # gaming compositor (Steam/Proton use)

@@ -6,8 +6,7 @@ local menu = "rofi -show drun"
 
 local browser = "brave"
 
-local screenshot =
-	[[grim -g "$(slurp -d -b '#101211cc' -c '#98a87cff' -s '#1a1d1b66' -B '#303630ff' -F 'Iosevka Nerd Font' -w 1)" - | swappy -f -]]
+local screenshot = "screenshot-region"
 
 local hyprmoncfg_monitors = os.getenv("HOME") .. "/.config/hypr/hyprmoncfg-monitors.lua"
 

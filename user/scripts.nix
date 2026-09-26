@@ -3,5 +3,6 @@
 in {
   home.packages = [
     (mkScript "bluetooth_status")
+    (mkScript "screenshot-region")
   ];
 }
