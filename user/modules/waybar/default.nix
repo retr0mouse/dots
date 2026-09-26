@@ -20,6 +20,9 @@ in {
     settings = [
       {
         position = "top";
+        height = 28;
+        spacing = 0;
+        reload_style_on_change = true;
 
         modules-left = [
           "group/workspaces"

@@ -1,114 +1,160 @@
+/* Flat terminal-style status line shared with Rofi, SwayNC and Hyprpolkit. */
+
 @define-color background #101211;
 @define-color second-background #1a1d1b;
 @define-color text #c5c8c5;
 @define-color borders #303630;
 @define-color focused #98a87c;
-@define-color focused2 #a8b98c;
 @define-color hover #7f9f9f;
 @define-color urgent #d08770;
 
 * {
+  min-height: 0;
   font-family: "Iosevka Nerd Font";
   font-size: 15px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: none;
 }
 
 window#waybar {
-  background-color: @background;
-  border-bottom: 0;
   color: @text;
-  transition: background-color 0.5s;
+  background: @background;
 }
 
 window#waybar.hidden {
-  opacity: 0.2;
+  opacity: 0.25;
 }
 
 window#waybar.empty #window {
-  background-color: transparent;
+  background: transparent;
 }
 
+/* Keep punctuation quiet so the information remains the focal point. */
+
 #custom-openbracket,
-#custom-closebracket,
-#custom-split {
+#custom-closebracket {
+  margin: 0 4px;
   color: @borders;
-  margin: 0 5px;
+}
+
+#custom-split {
+  margin: 0 6px;
+  color: @borders;
 }
 
 button {
-  border: none;
+  min-width: 0;
+  padding: 0;
+  color: @text;
+  background: transparent;
 }
 
-#custom-powerprofile:hover {
-  color: @hover;
-}
+/* Active workspaces use emphasis instead of a block or underline. */
 
 #workspaces button {
-  min-width: 0;
-  background-color: transparent;
+  padding: 0 5px;
   color: @text;
-  border-radius: 0;
+  background: transparent;
 }
 
 #workspaces button:hover {
-  background-color: @second-background;
+  color: @hover;
+  background: transparent;
 }
 
 #workspaces button.active {
   color: @focused;
-  background-color: @second-background;
+  font-weight: bold;
+  background: transparent;
 }
 
 #workspaces button.urgent {
-  background-color: @urgent;
+  color: @urgent;
+  background: transparent;
 }
 
-.modules-left > widget:first-child > #workspaces {
-  margin-left: 0;
+/* Interactive modules change ink only, like the rest of the desktop UI. */
+
+#clock,
+#cpu,
+#memory,
+#custom-igpu,
+#custom-dgpu,
+#backlight,
+#pulseaudio,
+#custom-powerprofile,
+#custom-bluetooth,
+#network,
+#custom-vpn,
+#battery,
+#custom-swaync {
+  padding: 0 2px;
 }
 
-.modules-right > widget:last-child > #workspaces {
-  margin-right: 0;
+#clock {
+  min-width: 48px;
+  color: @focused;
+  font-weight: bold;
 }
 
 #clock:hover,
-#battery:hover,
-#custom-bluetooth:hover,
-#custom-vpn:hover,
-#network:hover,
-#custom-swaync:hover,
-#backlight:hover,
+#cpu:hover,
+#memory:hover,
 #custom-igpu:hover,
 #custom-dgpu:hover,
-#memory:hover,
-#custom-cpu:hover,
-#pulseaudio:hover {
+#backlight:hover,
+#pulseaudio:hover,
+#custom-powerprofile:hover,
+#custom-bluetooth:hover,
+#network:hover,
+#custom-vpn:hover,
+#battery:hover,
+#custom-swaync:hover {
   color: @hover;
+  background: transparent;
 }
 
-#custom-vpn.connected {
-  color: @focused;
-}
+/* Green means present/healthy; red is reserved for degraded states. */
 
-#custom-vpn.error {
-  color: @urgent;
-}
-
+#custom-vpn.connected,
 #battery.charging,
 #battery.plugged {
-  background-color: @focused2;
-  color: @background;
-  padding: 0 5px;
+  color: @focused;
+  background: transparent;
+}
+
+#custom-vpn.error,
+#network.disconnected,
+#pulseaudio.muted,
+#battery.warning:not(.charging) {
+  color: @urgent;
+  background: transparent;
 }
 
 #battery.critical:not(.charging) {
-  background-color: @urgent;
-  color: @text;
-  animation: blink 0.5s steps(12) infinite alternate;
+  color: @urgent;
+  background: transparent;
+  animation: blink 0.7s steps(2) infinite alternate;
 }
 
 @keyframes blink {
   to {
-    background-color: @second-background;
-    color: @text;
+    color: @background;
+    background: @urgent;
   }
+}
+
+/* Match the square, bordered popovers used by SwayNC and Hyprpolkit. */
+
+tooltip {
+  color: @text;
+  background: @background;
+  border: 1px solid @borders;
+}
+
+tooltip label {
+  padding: 6px 8px;
+  color: @text;
 }
