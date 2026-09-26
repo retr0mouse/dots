@@ -1,29 +1,22 @@
-/*
- * The bar is the desktop's header: square, compact, and built from the same
- * framed sections and muted terminal palette as Rofi, SwayNC, and Hyprpolkit.
- */
-
 @define-color background #101211;
 @define-color second-background #1a1d1b;
 @define-color text #c5c8c5;
 @define-color borders #303630;
 @define-color focused #98a87c;
+@define-color focused2 #a8b98c;
 @define-color hover #7f9f9f;
 @define-color urgent #d08770;
 
 * {
-  min-height: 0;
   font-family: "Iosevka Nerd Font";
   font-size: 15px;
-  border-radius: 0;
-  text-shadow: none;
-  box-shadow: none;
 }
 
 window#waybar {
+  background-color: @background;
+  border-bottom: 0;
   color: @text;
-  background: @background;
-  border-bottom: 1px solid @borders;
+  transition: background-color 0.5s;
 }
 
 window#waybar.hidden {
@@ -31,146 +24,91 @@ window#waybar.hidden {
 }
 
 window#waybar.empty #window {
-  background: transparent;
+  background-color: transparent;
 }
 
-tooltip {
-  color: @text;
-  background: @background;
-  border: 1px solid @borders;
-}
-
-tooltip label {
-  padding: 5px 8px;
-  color: @text;
+#custom-openbracket,
+#custom-closebracket,
+#custom-split {
+  color: @borders;
+  margin: 0 5px;
 }
 
 button {
-  min-width: 0;
-  padding: 0;
-  color: @text;
-  background: transparent;
-  border: 0;
+  border: none;
 }
 
-button:hover {
+#custom-powerprofile:hover {
   color: @hover;
-  background: @second-background;
 }
-
-/* Brackets and pipes are structural chrome, matching the terminal tools. */
-
-#custom-openbracket,
-#custom-closebracket {
-  padding: 0 6px;
-  color: @borders;
-  background: @second-background;
-}
-
-#custom-split {
-  padding: 0 5px;
-  color: @borders;
-}
-
-/* Workspaces behave like Rofi rows: quiet by default, green when selected. */
 
 #workspaces button {
-  padding: 0 7px;
+  min-width: 0;
+  background-color: transparent;
   color: @text;
-  background: transparent;
-  border: 0 solid transparent;
-  border-bottom-width: 1px;
+  border-radius: 0;
 }
 
 #workspaces button:hover {
-  color: @hover;
-  background: @second-background;
-  border-bottom-color: @hover;
+  background-color: @second-background;
 }
 
 #workspaces button.active {
   color: @focused;
-  background: @second-background;
-  border-bottom-color: @focused;
+  background-color: @second-background;
 }
 
 #workspaces button.urgent {
-  color: @background;
-  background: @urgent;
-  border-bottom-color: @urgent;
+  background-color: @urgent;
 }
 
-/* Give data modules a consistent hit target without loosening the layout. */
-
-#clock,
-#cpu,
-#memory,
-#custom-igpu,
-#custom-dgpu,
-#backlight,
-#pulseaudio,
-#custom-powerprofile,
-#custom-bluetooth,
-#network,
-#custom-vpn,
-#battery,
-#custom-swaync {
-  padding: 0 5px;
+.modules-left > widget:first-child > #workspaces {
+  margin-left: 0;
 }
 
-#clock {
-  min-width: 54px;
-  color: @focused;
-  font-weight: bold;
-  background: @second-background;
+.modules-right > widget:last-child > #workspaces {
+  margin-right: 0;
 }
 
 #clock:hover,
-#cpu:hover,
-#memory:hover,
+#battery:hover,
+#custom-bluetooth:hover,
+#custom-vpn:hover,
+#network:hover,
+#custom-swaync:hover,
+#backlight:hover,
 #custom-igpu:hover,
 #custom-dgpu:hover,
-#backlight:hover,
-#pulseaudio:hover,
-#custom-powerprofile:hover,
-#custom-bluetooth:hover,
-#network:hover,
-#custom-vpn:hover,
-#battery:hover,
-#custom-swaync:hover {
+#memory:hover,
+#custom-cpu:hover,
+#pulseaudio:hover {
   color: @hover;
-  background: @second-background;
 }
 
 #custom-vpn.connected {
   color: @focused;
 }
 
-#custom-vpn.error,
-#network.disconnected,
-#pulseaudio.muted {
+#custom-vpn.error {
   color: @urgent;
 }
 
 #battery.charging,
 #battery.plugged {
+  background-color: @focused2;
   color: @background;
-  background: @focused;
-}
-
-#battery.warning:not(.charging) {
-  color: @urgent;
+  padding: 0 5px;
 }
 
 #battery.critical:not(.charging) {
-  color: @background;
-  background: @urgent;
-  animation: blink 0.6s steps(2) infinite alternate;
+  background-color: @urgent;
+  color: @text;
+  animation: blink 0.5s steps(12) infinite alternate;
 }
 
 @keyframes blink {
   to {
-    color: @urgent;
-    background: @second-background;
+    background-color: @second-background;
+    color: @text;
   }
 }
