@@ -127,12 +127,12 @@ button:checked {
 
 .notification-row .notification-background .notification .notification-default-action .notification-content .image,
 .notification-row .notification-background .notification .notification-default-action .notification-content .body-image {
-  margin: 4px 8px 4px 0;
+  margin: 4px 12px 4px 0;
   border-radius: 0;
 }
 
 .notification-row .notification-background .notification .notification-default-action .notification-content .app-icon {
-  margin: 4px 8px 4px 0;
+  margin: 4px 12px 4px 0;
   -gtk-icon-shadow: none;
 }
 
