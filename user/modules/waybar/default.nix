@@ -20,6 +20,10 @@ in {
     settings = [
       {
         position = "top";
+        layer = "top";
+        height = 32;
+        spacing = 0;
+        reload_style_on_change = true;
 
         modules-left = [
           "group/workspaces"
