@@ -1,4 +1,27 @@
 {pkgs, ...}: let
+  microphoneToggle = pkgs.writeShellApplication {
+    name = "microphone-toggle";
+    runtimeInputs = [
+      pkgs.swayosd
+      pkgs.wireplumber
+    ];
+    text = ''
+      source="@DEFAULT_AUDIO_SOURCE@"
+
+      wpctl set-mute "$source" toggle
+      state="$(wpctl get-volume "$source")"
+
+      if [[ "$state" == *"[MUTED]"* ]]; then
+        message="microphone muted"
+        icon="microphone-sensitivity-muted-symbolic"
+      else
+        message="microphone active"
+        icon="audio-input-microphone-symbolic"
+      fi
+
+      swayosd-client --custom-message "$message" --custom-icon "$icon"
+    '';
+  };
   sessionMenu = pkgs.writeShellApplication {
     name = "session-menu";
     runtimeInputs = [
@@ -51,7 +74,10 @@
     '';
   };
 in {
-  home.packages = [sessionMenu];
+  home.packages = [
+    microphoneToggle
+    sessionMenu
+  ];
 
   services.swayosd = {
     enable = true;

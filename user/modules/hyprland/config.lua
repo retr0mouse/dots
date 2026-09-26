@@ -91,6 +91,14 @@ hl.config({
 	},
 })
 
+hl.gesture({
+	fingers = 3,
+	direction = "pinch",
+	action = "cursor_zoom",
+	zoom_level = 1,
+	mode = "live",
+})
+
 -- Window rules
 
 hl.window_rule({
@@ -306,7 +314,7 @@ hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume 
 
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"), { locked = true })
 
-hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("swayosd-client --input-volume mute-toggle"), { locked = true })
+hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("microphone-toggle"), { locked = true })
 
 hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("swayosd-client --brightness raise"), { locked = true })
 
