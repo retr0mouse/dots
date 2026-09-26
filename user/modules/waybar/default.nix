@@ -80,7 +80,7 @@ in {
         };
 
         "hyprland/workspaces" = {
-          all-outputs = true;
+          all-outputs = false;
           warp-on-scroll = false;
           enable-bar-scroll = true;
           disable-scroll-wraparound = true;

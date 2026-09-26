@@ -65,7 +65,8 @@ button {
   background: transparent;
 }
 
-#workspaces button.active {
+#workspaces button.active,
+#workspaces button.visible {
   color: @background;
   font-weight: bold;
   background: @focused;
