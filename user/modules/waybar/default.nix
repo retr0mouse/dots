@@ -30,15 +30,12 @@ in {
           "group/performance"
         ];
 
-        modules-center = [
-          "custom/openbracket"
-          "clock"
-          "custom/closebracket"
-        ];
+        modules-center = [];
 
         modules-right = [
           "group/brightvol"
           "group/system"
+          "group/datetime"
         ];
 
         "custom/openbracket" = {
@@ -160,6 +157,17 @@ in {
             ];
         };
 
+        "group/datetime" = {
+          orientation = "horizontal";
+          modules = [
+            "custom/openbracket"
+            "clock#date"
+            "custom/split"
+            "clock#time"
+            "custom/closebracket"
+          ];
+        };
+
         pulseaudio = {
           scroll-step = 5;
           format = "{icon} {volume}%";
@@ -200,9 +208,14 @@ in {
             ++ ["custom/closebracket"];
         };
 
-        clock = {
+        "clock#date" = {
+          format = "{:%a %d %b}";
+          tooltip = false;
+        };
+
+        "clock#time" = {
           format = "{:%H:%M}";
-          tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+          tooltip = false;
         };
 
         battery = {
