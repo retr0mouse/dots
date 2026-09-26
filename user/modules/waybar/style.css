@@ -84,8 +84,6 @@ button {
 #memory,
 #custom-igpu,
 #custom-dgpu,
-#backlight,
-#pulseaudio,
 #custom-powerprofile,
 #custom-bluetooth,
 #network,
@@ -113,8 +111,6 @@ button {
 #memory:hover,
 #custom-igpu:hover,
 #custom-dgpu:hover,
-#backlight:hover,
-#pulseaudio:hover,
 #custom-powerprofile:hover,
 #custom-bluetooth:hover,
 #network:hover,
@@ -141,7 +137,6 @@ button {
 
 #custom-vpn.error,
 #network.disconnected,
-#pulseaudio.muted,
 #battery.warning:not(.charging) {
   color: @urgent;
   background: transparent;

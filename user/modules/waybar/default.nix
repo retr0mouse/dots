@@ -6,7 +6,6 @@
   cfg = config.dotfiles.waybar;
 in {
   options.dotfiles.waybar = {
-    showBacklight = lib.mkEnableOption "the display backlight widget";
     showBattery = lib.mkEnableOption "the battery widget";
     showDiscreteGpu = lib.mkEnableOption "the discrete GPU widget";
     showIntegratedGpu = lib.mkEnableOption "the integrated GPU widget";
@@ -27,13 +26,11 @@ in {
         modules-left = [
           "custom/dashboard"
           "group/workspaces"
-          "group/performance"
         ];
 
-        modules-center = [];
+        modules-center = ["group/performance"];
 
         modules-right = [
-          "group/brightvol"
           "group/system"
           "group/datetime"
         ];
@@ -142,21 +139,6 @@ in {
           on-click = "kitty --class waybar-performance --title '[ performance ]' -e btop";
         };
 
-        "group/brightvol" = {
-          orientation = "horizontal";
-          tooltip = false;
-          modules =
-            ["custom/openbracket"]
-            ++ lib.optionals cfg.showBacklight [
-              "backlight"
-              "custom/split"
-            ]
-            ++ [
-              "pulseaudio"
-              "custom/closebracket"
-            ];
-        };
-
         "group/datetime" = {
           orientation = "horizontal";
           modules = [
@@ -166,22 +148,6 @@ in {
             "clock#time"
             "custom/closebracket"
           ];
-        };
-
-        pulseaudio = {
-          scroll-step = 5;
-          format = "{icon} {volume}%";
-          format-muted = "MUTED";
-          format-icons = {
-            default = ["" "" ""];
-          };
-          on-click = "pwvucontrol";
-        };
-
-        backlight = {
-          format = "{icon} {percent}%";
-          format-icons = ["󰍹 "];
-          on-click = "kitty --class waybar-monitor --title '[ monitors ]' -e hyprmoncfg";
         };
 
         "group/system" = {
@@ -209,7 +175,7 @@ in {
         };
 
         "clock#date" = {
-          format = "{:%a %d %b}";
+          format = "{:%d/%m/%Y}";
           tooltip = false;
         };
 

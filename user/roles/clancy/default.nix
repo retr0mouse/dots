@@ -120,7 +120,6 @@ in {
     # User-facing hardware features follow the assigned physical machine.
     dotfiles.waybar = {
       showBattery = osConfig.dotfiles.hardware.battery;
-      showBacklight = osConfig.dotfiles.hardware.backlight;
       showPowerProfile = osConfig.dotfiles.hardware.powerProfiles;
       showIntegratedGpu = osConfig.dotfiles.hardware.integratedGpu;
       showDiscreteGpu = osConfig.dotfiles.hardware.discreteGpu;
