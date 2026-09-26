@@ -8,6 +8,7 @@
     second-background: #1a1d1b;
     text:              #c5c8c5;
     borders:           #303630;
+    structure:         #768076;
     focused:           #98a87c;
     hover:             #7f9f9f;
     urgent:            #d08770;
@@ -44,30 +45,30 @@ textbox-split {
     expand:     false;
     str:        "|";
     margin:     0 7px;
-    text-color: @borders;
+    text-color: @structure;
 }
 
 textbox-open {
     expand:     false;
     str:        "[";
-    text-color: @borders;
+    text-color: @structure;
 }
 
 textbox-close {
     expand:     false;
     str:        "]";
-    text-color: @borders;
+    text-color: @structure;
 }
 
 prompt {
     expand:     false;
-    text-color: @focused;
+    text-color: @text;
 }
 
 entry {
     expand:            true;
     placeholder:       "type to filter";
-    placeholder-color: @borders;
+    placeholder-color: @structure;
     text-color:        @text;
 }
 
@@ -135,13 +136,13 @@ element normal.urgent {
 }
 
 element selected.normal {
-    background-color: @second-background;
-    text-color:       @focused;
+    background-color: @focused;
+    text-color:       @background;
 }
 
 element selected.active {
-    background-color: @second-background;
-    text-color:       @focused;
+    background-color: @focused;
+    text-color:       @background;
 }
 
 element selected.urgent {

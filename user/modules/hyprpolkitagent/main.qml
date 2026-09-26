@@ -9,6 +9,7 @@ ApplicationWindow {
     readonly property color paletteSecondBackground: "#1a1d1b"
     readonly property color paletteText: "#c5c8c5"
     readonly property color paletteBorder: "#303630"
+    readonly property color paletteStructure: "#768076"
     readonly property color paletteFocused: "#98a87c"
     readonly property color paletteHover: "#7f9f9f"
     readonly property color paletteUrgent: "#d08770"
@@ -58,7 +59,7 @@ ApplicationWindow {
 
             Label {
                 text: "[ authentication ]"
-                color: paletteFocused
+                color: paletteText
                 font.bold: true
                 font.pointSize: 15
                 Layout.alignment: Qt.AlignHCenter
@@ -97,7 +98,7 @@ ApplicationWindow {
                 selectionColor: paletteFocused
                 selectedTextColor: paletteBackground
                 placeholderText: "[ password ]"
-                placeholderTextColor: paletteBorder
+                placeholderTextColor: paletteStructure
                 echoMode: TextInput.Password
                 persistentSelection: true
                 selectByMouse: true

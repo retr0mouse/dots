@@ -35,7 +35,7 @@ if (mode == "reboot")
     progress_enabled = 0;
   }
 
-title.image = text_image("[ nixos ]", 0.596078, 0.658824, 0.486275);
+title.image = text_image("[ nixos ]", 0.772549, 0.784314, 0.772549);
 title.sprite = Sprite();
 center_sprite(title.sprite, title.image, 0.46, 10);
 
@@ -114,7 +114,7 @@ fun password_frame(bullets)
 
 fun display_password_callback(prompt, bullets)
   {
-    local.label = text_image("[ unlock ]", 0.498039, 0.623529, 0.623529);
+    local.label = text_image("[ unlock ]", 0.772549, 0.784314, 0.772549);
     local.entry = text_image(password_frame(bullets), 0.596078, 0.658824, 0.486275);
 
     center_sprite(status.sprite, label, 0.51, 10);

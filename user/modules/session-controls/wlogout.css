@@ -34,8 +34,8 @@ button {
 button:hover,
 button:focus,
 button:active {
-  color: @focused;
-  background-color: @second-background;
+  color: @background;
+  background-color: @focused;
   border-color: @focused;
   outline-style: none;
 }
@@ -46,6 +46,7 @@ button:active {
 #shutdown:hover,
 #shutdown:focus,
 #shutdown:active {
-  color: @urgent;
+  color: @background;
+  background-color: @urgent;
   border-color: @urgent;
 }
