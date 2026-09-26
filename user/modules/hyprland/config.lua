@@ -219,6 +219,8 @@ hl.bind("SUPER + SHIFT + Q", hl.dsp.window.close())
 
 hl.bind("SUPER + E", hl.dsp.exec_cmd("kitty -e yazi"))
 
+hl.bind("SUPER + V", hl.dsp.exec_cmd("clipboard_menu"))
+
 hl.bind(caps .. " + V", hl.dsp.window.float())
 
 hl.bind(caps .. " + F", hl.dsp.window.fullscreen())

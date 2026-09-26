@@ -3,6 +3,7 @@
 in {
   home.packages = [
     (mkScript "bluetooth_status")
+    (mkScript "clipboard_menu")
     (mkScript "screenshot-region")
   ];
 }
