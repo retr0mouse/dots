@@ -25,6 +25,7 @@ in {
         reload_style_on_change = true;
 
         modules-left = [
+          "custom/dashboard"
           "group/workspaces"
           "group/performance"
         ];
@@ -68,6 +69,12 @@ in {
           on-click = "vpn-control toggle";
           interval = 5;
           return-type = "json";
+        };
+
+        "custom/dashboard" = {
+          format = " ";
+          tooltip = false;
+          on-click = "swaync-client --toggle-panel";
         };
 
         "group/workspaces" = {
@@ -190,11 +197,7 @@ in {
               "custom/split"
               "battery"
             ]
-            ++ [
-              "custom/split"
-              "custom/swaync"
-              "custom/closebracket"
-            ];
+            ++ ["custom/closebracket"];
         };
 
         clock = {
@@ -215,12 +218,6 @@ in {
           format-charging = "󰂄 {capacity}%";
           format-icons = ["󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰁹"];
           on-click = "session-menu";
-        };
-
-        "custom/swaync" = {
-          format = " ";
-          tooltip = false;
-          on-click = "swaync-client --toggle-panel";
         };
 
         network = {

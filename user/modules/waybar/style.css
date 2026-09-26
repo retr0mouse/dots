@@ -91,8 +91,15 @@ button {
 #network,
 #custom-vpn,
 #battery,
-#custom-swaync {
+#custom-dashboard {
   padding: 0 2px;
+}
+
+#custom-dashboard {
+  padding: 0 10px;
+  color: @focused;
+  font-size: 17px;
+  background: @second-background;
 }
 
 #clock {
@@ -113,9 +120,14 @@ button {
 #network:hover,
 #custom-vpn:hover,
 #battery:hover,
-#custom-swaync:hover {
+#custom-dashboard:hover {
   color: @hover;
   background: transparent;
+}
+
+#custom-dashboard:hover {
+  color: @background;
+  background: @focused;
 }
 
 /* Green means present/healthy; red is reserved for degraded states. */

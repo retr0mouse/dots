@@ -25,6 +25,8 @@
   --notification-icon-size: 48px;
   --notification-app-icon-size: 18px;
   --notification-group-icon-size: 24px;
+  --mpris-album-art-icon-size: 72px;
+  --widget-volume-row-icon-size: 24px;
   --border: 1px solid #303630;
   --border-radius: 0;
   --notification-shadow: none;
@@ -311,6 +313,143 @@ progressbar progress {
 .widget-title > button {
   margin-left: 8px;
   border-radius: 0;
+}
+
+/* Dashboard header and controls */
+
+.widget-menubar {
+  padding: 8px 12px;
+  background: @second-background;
+  border-bottom: 1px solid @borders;
+}
+
+.widget-menubar > .menu-button-bar > .start,
+.widget-menubar > .menu-button-bar > .end {
+  margin: 0;
+}
+
+.widget-menubar > .menu-button-bar > .widget-menubar-container button {
+  margin: 0;
+  border-radius: 0;
+}
+
+.widget-menubar .identity button {
+  padding: 3px 0;
+  color: @text;
+  font-weight: bold;
+  background: transparent;
+  border: 0;
+}
+
+.widget-menubar .identity button:hover {
+  color: @text;
+  background: transparent;
+}
+
+.widget-menubar .power button {
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0;
+  color: @text;
+  background: @background;
+  border: 1px solid @borders;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.widget-menubar .power button:hover {
+  color: @hover;
+  background: @second-background;
+  border-color: @hover;
+}
+
+.widget-volume,
+.widget-backlight {
+  padding: 9px 12px;
+  border-bottom: 1px solid @borders;
+}
+
+.widget-volume label,
+.widget-backlight label {
+  min-width: 24px;
+  margin-right: 10px;
+  padding: 0;
+  color: @text;
+}
+
+.widget-volume scale,
+.widget-backlight scale {
+  margin: 0;
+}
+
+.widget-volume scale trough,
+.widget-backlight scale trough {
+  min-height: 4px;
+  background: @second-background;
+  border: 0;
+}
+
+.widget-volume scale highlight,
+.widget-backlight scale highlight {
+  min-height: 4px;
+  background: @focused;
+  border: 0;
+}
+
+.widget-volume scale slider,
+.widget-backlight scale slider {
+  min-width: 12px;
+  min-height: 12px;
+  background: @text;
+  border: 1px solid @focused;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.widget-volume scale slider:hover,
+.widget-backlight scale slider:hover {
+  background: @hover;
+}
+
+.widget-mpris {
+  padding: 8px 12px;
+  border-bottom: 1px solid @borders;
+}
+
+.widget-mpris-player {
+  color: @text;
+  background: @second-background;
+  border: 1px solid @borders;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.widget-mpris-album-art {
+  margin: 8px;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.widget-mpris-title {
+  color: @text;
+  font-weight: bold;
+}
+
+.widget-mpris-subtitle {
+  color: @hover;
+}
+
+.widget-mpris button {
+  margin: 2px;
+  padding: 4px;
+  color: @text;
+  background: transparent;
+  border: 0;
+}
+
+.widget-mpris button:hover {
+  color: @hover;
+  background: transparent;
 }
 
 .widget-dnd {
