@@ -54,6 +54,37 @@
       swayosd-client --custom-message "$message" --custom-icon "$icon"
     '';
   };
+  keyboardBacklight = pkgs.writeShellApplication {
+    name = "keyboard-backlight";
+    runtimeInputs = [
+      pkgs.brightnessctl
+      pkgs.swayosd
+    ];
+    text = ''
+      device="asus::kbd_backlight"
+
+      case "''${1:-}" in
+        up)
+          brightnessctl --quiet --class leds --device "$device" set +1
+          ;;
+        down)
+          brightnessctl --quiet --class leds --device "$device" set 1-
+          ;;
+        *)
+          echo "Usage: keyboard-backlight {up|down}" >&2
+          exit 2
+          ;;
+      esac
+
+      brightness="$(brightnessctl --class leds --device "$device" get)"
+      maximum="$(brightnessctl --class leds --device "$device" max)"
+
+      swayosd-client \
+        --custom-icon input-keyboard-symbolic \
+        --custom-segmented-progress "$brightness:$maximum" \
+        --custom-progress-text "$brightness/$maximum"
+    '';
+  };
 in {
   imports = [../../modules/looking-glass.nix];
 
@@ -61,10 +92,13 @@ in {
     (mkScript "dgpu_usage")
     (mkScript "igpu_usage")
     (mkScript "powerprofile")
+    keyboardBacklight
     toggleTouchpad
   ];
 
   wayland.windowManager.hyprland.extraConfig = lib.mkAfter ''
+    hl.bind("XF86KbdBrightnessUp", hl.dsp.exec_cmd("keyboard-backlight up"), { locked = true })
+    hl.bind("XF86KbdBrightnessDown", hl.dsp.exec_cmd("keyboard-backlight down"), { locked = true })
     hl.bind("XF86TouchpadToggle", hl.dsp.exec_cmd("toggle-touchpad"), { locked = true })
   '';
 
