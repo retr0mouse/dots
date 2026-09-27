@@ -18,6 +18,7 @@
       wireguard_unit="wg-quick-wg0.service"
       toggle_unit="wireguard-toggle.service"
       wireguard_dns="10.10.0.1"
+      wireguard_home_marker="/run/wireguard-auto.home"
 
       dns_is_reachable() {
           dig \
@@ -30,7 +31,9 @@
       }
 
       display_status() {
-          if ! systemctl is-active --quiet "$wireguard_unit"; then
+          if [[ -e "$wireguard_home_marker" ]]; then
+              printf '%s\n' '{"text":"󰦝 ","class":"home","tooltip":"WireGuard is disabled on the home network"}'
+          elif ! systemctl is-active --quiet "$wireguard_unit"; then
               printf '%s\n' '{"text":"󰦝 ","class":"disconnected","tooltip":"WireGuard is off\nClick to enable"}'
           elif dns_is_reachable; then
               printf '%s\n' '{"text":"󰌾 ","class":"connected","tooltip":"WireGuard is connected\nClick to disable"}'
@@ -43,6 +46,10 @@
           was_active=false
           if systemctl is-active --quiet "$wireguard_unit"; then
               was_active=true
+          fi
+
+          if [[ "$was_active" == false && -e "$wireguard_home_marker" ]]; then
+              return 0
           fi
 
           if ! systemctl start "$toggle_unit"; then
@@ -59,6 +66,8 @@
               else
                   notify-send "WireGuard disabled" "Automatic activation is paused on this network."
               fi
+          elif [[ -e "$wireguard_home_marker" ]]; then
+              return 0
           elif systemctl is-active --quiet "$wireguard_unit" && dns_is_reachable; then
               notify-send "WireGuard enabled" "The home DNS server is reachable."
           else
@@ -83,10 +92,45 @@
       esac
     '';
   };
+
+  mkHyprcursorTheme = {
+    package,
+    themeName,
+  }:
+    pkgs.runCommand "${themeName}-hyprcursor" {
+      nativeBuildInputs = [
+        pkgs.hyprcursor
+        pkgs.xcur2png
+      ];
+    } ''
+      extracted_dir="$TMPDIR/extracted"
+      compiled_dir="$TMPDIR/compiled"
+      working_theme="$extracted_dir/extracted_${themeName}"
+      compiled_theme="$compiled_dir/theme_${themeName}"
+      cursor_dir="$out/share/icons/${themeName}"
+
+      mkdir -p "$extracted_dir" "$compiled_dir" "$cursor_dir"
+      hyprcursor-util \
+        --extract "${package}/share/icons/${themeName}" \
+        --output "$extracted_dir" >/dev/null
+      sed -i 's/^name =.*/name = ${themeName}/' "$working_theme/manifest.hl"
+      hyprcursor-util \
+        --create "$working_theme" \
+        --output "$compiled_dir" >/dev/null
+
+      cp -rs "${package}/share/icons/${themeName}/." "$cursor_dir/"
+      cp -r "$compiled_theme/." "$cursor_dir/"
+    '';
+
+  cursorTheme = mkHyprcursorTheme {
+    package = pkgs.phinger-cursors;
+    themeName = "phinger-cursors-dark";
+  };
 in {
   imports = [
     ../../modules/hyprland
     ../../modules/waybar
+    ../../modules/quickshell
     ../../modules/rofi
     ../../modules/session-controls
     ../../modules/hyprpolkitagent
@@ -118,8 +162,19 @@ in {
       ++ lib.optionals osConfig.dotfiles.hardware.backlight [pkgs.brightnessctl];
 
     # User-facing hardware features follow the assigned physical machine.
+    dotfiles.desktopBar = "quickshell";
+
     dotfiles.waybar = {
       showBattery = osConfig.dotfiles.hardware.battery;
+      showPowerProfile = osConfig.dotfiles.hardware.powerProfiles;
+      showIntegratedGpu = osConfig.dotfiles.hardware.integratedGpu;
+      showDiscreteGpu = osConfig.dotfiles.hardware.discreteGpu;
+      showVpn = osConfig.dotfiles.deployment.activateIdentity;
+    };
+
+    dotfiles.quickshell = {
+      showBattery = osConfig.dotfiles.hardware.battery;
+      showBacklight = osConfig.dotfiles.hardware.backlight;
       showPowerProfile = osConfig.dotfiles.hardware.powerProfiles;
       showIntegratedGpu = osConfig.dotfiles.hardware.integratedGpu;
       showDiscreteGpu = osConfig.dotfiles.hardware.discreteGpu;
@@ -138,7 +193,9 @@ in {
         Restart = "on-failure";
       };
 
-      Install.WantedBy = ["graphical-session.target"];
+      # Keep the complete Waybar service as a one-line fallback. It is only
+      # started automatically when dotfiles.desktopBar is set to "waybar".
+      Install.WantedBy = lib.optionals (config.dotfiles.desktopBar == "waybar") ["graphical-session.target"];
     };
 
     systemd.user.services.swaync = {
@@ -201,6 +258,15 @@ in {
       Install.WantedBy = ["graphical-session.target"];
     };
 
+    # UWSM launches applications through the user manager, so mirror the
+    # pointerCursor variables into systemd's session environment as well.
+    systemd.user.sessionVariables = {
+      HYPRCURSOR_THEME = "phinger-cursors-dark";
+      HYPRCURSOR_SIZE = 32;
+      XCURSOR_THEME = "phinger-cursors-dark";
+      XCURSOR_SIZE = 32;
+    };
+
     wayland.windowManager.hyprland.systemd.enable = false;
 
     gtk = {
@@ -213,10 +279,11 @@ in {
 
     home.pointerCursor = {
       gtk.enable = true;
+      hyprcursor.enable = true;
       x11.enable = true;
-      package = pkgs.bibata-cursors;
-      name = "Bibata-Modern-Classic";
-      size = 24;
+      package = cursorTheme;
+      name = "phinger-cursors-dark";
+      size = 32;
     };
 
     # Default apps

@@ -104,6 +104,8 @@ in {
 
   dotfiles.roles.clancy.discordPackage = discordAmd;
 
+  dotfiles.quickshell.backlightDevice = "amdgpu_bl2";
+
   programs.looking-glass-client.package = lookingGlassPackage;
 
   # This machine exposes its AMD iGPU under this stable, host-specific name.
@@ -119,6 +121,8 @@ in {
   # Keep GTK's renderer on Mesa so desktop services do not claim the RTX that
   # is reserved for VM passthrough.
   systemd.user.services.swaync.Service.Environment = passthroughSafeGtkEnvironment;
+
+  systemd.user.services.quickshell.Service.Environment = lib.mkAfter passthroughSafeGtkEnvironment;
 
   systemd.user.services.swayosd.Service.Environment = passthroughSafeGtkEnvironment;
 }

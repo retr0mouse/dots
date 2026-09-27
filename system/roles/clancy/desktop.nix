@@ -168,9 +168,9 @@ in {
       };
 
       cursor = {
-        theme = "Bibata-Modern-Classic";
-        size = 24;
-        path = "${pkgs.bibata-cursors}/share/icons";
+        theme = "phinger-cursors-dark";
+        size = 32;
+        path = "${pkgs.phinger-cursors}/share/icons";
       };
 
       keyboard = {

@@ -10,6 +10,7 @@
   wireguardUnit = "wg-quick-wg0.service";
   wireguardDns = "10.10.0.1";
   wireguardPolicyMarker = "/run/wireguard-auto.blocked";
+  wireguardHomeMarker = "/run/wireguard-auto.home";
   wireguardPolicyLock = "/run/wireguard-auto.lock";
 
   checkWireguardDns = pkgs.writeShellScript "check-wireguard-dns" ''
@@ -39,26 +40,16 @@
         '$2 == "802-11-wireless" || $2 == "802-3-ethernet" { print $1; exit }'
   '';
 
-  wireguardAuto = pkgs.writeShellScript "wireguard-auto" ''
-    set -u
-
-    exec 9>"${wireguardPolicyLock}"
-    ${pkgs.util-linux}/bin/flock 9
-
-    connection_uuid="$(${getPrimaryConnectionUuid})"
-    connectivity="$(${pkgs.networkmanager}/bin/nmcli \
-      -t \
-      -f CONNECTIVITY \
-      general 2>/dev/null || true)"
+  updateWireguardHomeState = pkgs.writeShellScript "update-wireguard-home-state" ''
     default_gateway="$(${pkgs.iproute2}/bin/ip -4 route show default \
       | ${pkgs.gawk}/bin/awk 'NR == 1 { print $3 }')"
     default_interface="$(${pkgs.iproute2}/bin/ip -4 route show default \
       | ${pkgs.gawk}/bin/awk 'NR == 1 { print $5 }')"
-    wifi_uuid=""
+    connection_uuid=""
     gateway_mac=""
 
     if [[ -n "$default_interface" ]]; then
-      wifi_uuid="$(${pkgs.networkmanager}/bin/nmcli \
+      connection_uuid="$(${pkgs.networkmanager}/bin/nmcli \
         -g GENERAL.CON-UUID \
         device show "$default_interface" 2>/dev/null || true)"
     fi
@@ -70,21 +61,36 @@
         | ${pkgs.gawk}/bin/awk '/lladdr/ { print tolower($5); exit }')"
     fi
 
-    is_home_network=false
-
     for trusted_uuid in ''${WIREGUARD_HOME_WIFI_UUIDS:-}; do
-      if [[ "$wifi_uuid" == "$trusted_uuid" ]]; then
-        is_home_network=true
-        break
+      if [[ "$connection_uuid" == "$trusted_uuid" ]]; then
+        ${pkgs.coreutils}/bin/touch "${wireguardHomeMarker}"
+        exit 0
       fi
     done
 
     if [[ -n "''${WIREGUARD_HOME_GATEWAY_MAC:-}" ]] \
       && [[ "$gateway_mac" == "$WIREGUARD_HOME_GATEWAY_MAC" ]]; then
-      is_home_network=true
+      ${pkgs.coreutils}/bin/touch "${wireguardHomeMarker}"
+      exit 0
     fi
 
-    if [[ "$is_home_network" == true ]]; then
+    ${pkgs.coreutils}/bin/rm -f "${wireguardHomeMarker}"
+    exit 1
+  '';
+
+  wireguardAuto = pkgs.writeShellScript "wireguard-auto" ''
+    set -u
+
+    exec 9>"${wireguardPolicyLock}"
+    ${pkgs.util-linux}/bin/flock 9
+
+    connection_uuid="$(${getPrimaryConnectionUuid})"
+    connectivity="$(${pkgs.networkmanager}/bin/nmcli \
+      -t \
+      -f CONNECTIVITY \
+      general 2>/dev/null || true)"
+
+    if ${updateWireguardHomeState}; then
       ${pkgs.systemd}/bin/systemctl stop ${wireguardUnit}
       ${pkgs.coreutils}/bin/rm -f "${wireguardPolicyMarker}"
       echo "WireGuard disabled on the home network"
@@ -140,15 +146,28 @@
     ${pkgs.util-linux}/bin/flock 9
 
     connection_uuid="$(${getPrimaryConnectionUuid})"
+    is_home_network=false
+
+    if ${updateWireguardHomeState}; then
+      is_home_network=true
+    fi
 
     if ${pkgs.systemd}/bin/systemctl is-active --quiet ${wireguardUnit}; then
       ${pkgs.systemd}/bin/systemctl stop ${wireguardUnit}
 
-      if [[ -n "$connection_uuid" ]]; then
+      if [[ "$is_home_network" == true ]]; then
+        ${pkgs.coreutils}/bin/rm -f "${wireguardPolicyMarker}"
+      elif [[ -n "$connection_uuid" ]]; then
         printf '%s\n' "$connection_uuid" >"${wireguardPolicyMarker}"
       fi
 
       echo "WireGuard disabled manually"
+      exit 0
+    fi
+
+    if [[ "$is_home_network" == true ]]; then
+      ${pkgs.coreutils}/bin/rm -f "${wireguardPolicyMarker}"
+      echo "WireGuard is unavailable on the home network"
       exit 0
     fi
 
@@ -222,6 +241,7 @@ in {
     serviceConfig = {
       Type = "oneshot";
       ExecStart = wireguardToggle;
+      EnvironmentFile = wireguardHomeNetworkFile;
     };
   };
 

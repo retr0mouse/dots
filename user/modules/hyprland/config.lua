@@ -10,6 +10,14 @@ local screenshot = "screenshot-region"
 
 local hyprmoncfg_monitors = os.getenv("HOME") .. "/.config/hypr/hyprmoncfg-monitors.lua"
 
+-- Keep Hyprland's native cursor and its XCursor fallback in sync.  Home
+-- Manager installs the theme, but UWSM does not inherit pointerCursor's
+-- generated values early enough for the compositor session.
+hl.env("HYPRCURSOR_THEME", "phinger-cursors-dark")
+hl.env("HYPRCURSOR_SIZE", "32")
+hl.env("XCURSOR_THEME", "phinger-cursors-dark")
+hl.env("XCURSOR_SIZE", "32")
+
 local file = io.open(hyprmoncfg_monitors, "r")
 if file then
 	file:close()

@@ -9,12 +9,7 @@
       window_padding_width = 10;
       cursor_shape = "block";
       cursor_blink_interval = 0;
-      tab_bar_edge = "top";
-      tab_bar_style = "separator";
-      tab_separator = ''" "'';
-      tab_title_template = "[ {index} | {title} ]";
-      active_tab_font_style = "bold";
-      inactive_tab_font_style = "bold";
+      tab_bar_style = "hidden";
     };
     extraConfig = ''
       background #0f1115
@@ -58,27 +53,6 @@
       # white
       color7 #d8dee9
       color15 #ffffff
-
-
-      tab_bar_background #0f1115
-
-      active_tab_background #a8c080
-      active_tab_foreground #0f1115
-
-      inactive_tab_background #1a1d23
-      inactive_tab_foreground #7f8794
     '';
-    keybindings = {
-      # Switch to tab by index (1-based!)
-      "ctrl+1" = "goto_tab 1";
-      "ctrl+2" = "goto_tab 2";
-      "ctrl+3" = "goto_tab 3";
-      "ctrl+4" = "goto_tab 4";
-      "ctrl+5" = "goto_tab 5";
-      "ctrl+6" = "goto_tab 6";
-      "ctrl+7" = "goto_tab 7";
-      "ctrl+8" = "goto_tab 8";
-      "ctrl+9" = "goto_tab 9";
-    };
   };
 }
