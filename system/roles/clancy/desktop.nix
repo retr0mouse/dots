@@ -168,9 +168,9 @@ in {
       };
 
       cursor = {
-        theme = "phinger-cursors-dark";
-        size = 32;
-        path = "${pkgs.phinger-cursors}/share/icons";
+        theme = "Yaru";
+        size = 24;
+        path = "${pkgs.yaru-theme}/share/icons";
       };
 
       keyboard = {

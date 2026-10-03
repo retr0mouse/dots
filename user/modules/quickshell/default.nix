@@ -329,6 +329,7 @@ in {
 
   config = {
     home.packages = [
+      pkgs.calcurse
       pkgs.quickshell
       quickshellAudioDevice
       quickshellFetch
@@ -337,6 +338,44 @@ in {
     ];
 
     xdg.configFile = {
+      "calcurse/conf" = {
+        force = true;
+        text = ''
+          appearance.calendarview=monthly
+          appearance.compactpanels=no
+          appearance.defaultpanel=calendar
+          appearance.layout=1
+          appearance.headerline=yes
+          appearance.eventseparator=yes
+          appearance.dayseparator=yes
+          appearance.emptyline=yes
+          appearance.emptyday=--
+          appearance.notifybar=yes
+          appearance.sidebarwidth=0
+          appearance.theme=green on default
+          appearance.todoview=hide-completed
+          appearance.headingpos=right-justified
+          daemon.enable=no
+          daemon.log=no
+          format.inputdate=1
+          format.notifydate=%a %F
+          format.notifytime=%T
+          format.appointmenttime=%H:%M
+          format.outputdate=%D
+          format.dayheading=%B %e, %Y
+          general.autogc=no
+          general.autosave=yes
+          general.confirmdelete=yes
+          general.confirmquit=yes
+          general.firstdayofweek=monday
+          general.multipledays=yes
+          general.periodicsave=0
+          general.systemevents=yes
+          notification.command=printf '\a'
+          notification.notifyall=flagged-only
+          notification.warning=300
+        '';
+      };
       "quickshell/dots/shell.qml".source = ./shell.qml;
       "quickshell/dots/Bar.qml".source = ./Bar.qml;
       "quickshell/dots/BarButton.qml".source = ./BarButton.qml;
@@ -345,8 +384,10 @@ in {
       "quickshell/dots/BluetoothPanel.qml".source = ./BluetoothPanel.qml;
       "quickshell/dots/CalendarPanel.qml".source = ./CalendarPanel.qml;
       "quickshell/dots/ControlPopup.qml".source = ./ControlPopup.qml;
+      "quickshell/dots/DisplayPanel.qml".source = ./DisplayPanel.qml;
       "quickshell/dots/FetchPanel.qml".source = ./FetchPanel.qml;
       "quickshell/dots/NetworkPanel.qml".source = ./NetworkPanel.qml;
+      "quickshell/dots/PanelExpandButton.qml".source = ./PanelExpandButton.qml;
       "quickshell/dots/PowerPanel.qml".source = ./PowerPanel.qml;
       "quickshell/dots/SystemData.qml".source = ./SystemData.qml;
     };
@@ -366,6 +407,7 @@ in {
         Environment = [
           "QS_NO_RELOAD_POPUP=1"
           "QS_AUDIO_DEVICE_COMMAND=${quickshellAudioDevice}/bin/quickshell-audio-device"
+          "QS_BRIGHTNESS_COMMAND=${pkgs.brightnessctl}/bin/brightnessctl"
           "QS_STATUS_COMMAND=${quickshellStatus}/bin/quickshell-status"
           "QS_FETCH_COMMAND=${quickshellFetch}/bin/quickshell-fetch"
           "QS_NETWORK_DETAILS_COMMAND=${quickshellNetworkDetails}/bin/quickshell-network-details"

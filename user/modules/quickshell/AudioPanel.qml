@@ -21,6 +21,11 @@ PanelWindow {
 
     signal closeRequested()
 
+    function openFullApp(): void {
+        root.shell.run(["pwvucontrol"]);
+        root.closeRequested();
+    }
+
     function nodeClass(node): string {
         if (!node || !node.properties)
             return "";
@@ -130,21 +135,11 @@ PanelWindow {
                 font.bold: true
             }
 
-            Text {
+            PanelExpandButton {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                width: 28
-                horizontalAlignment: Text.AlignHCenter
-                text: "×"
-                color: closePointer.containsMouse ? root.shell.textColor : root.shell.structureColor
-                font.pixelSize: 18
-
-                MouseArea {
-                    id: closePointer
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: root.closeRequested()
-                }
+                shell: root.shell
+                onClicked: root.openFullApp()
             }
         }
 

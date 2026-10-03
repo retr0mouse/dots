@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+flake="path:${repo_root}"
+host_target="${flake}#nixosConfigurations.clancy.config.system.build.toplevel"
+image_target="${flake}#nixosConfigurations.tv.config.system.build.sdImage"
+result_link="${repo_root}/result-tv-image"
+
+echo "Preparing temporary AArch64 execution support..."
+
+# Build, but do not activate, the host generation that contains the QEMU
+# interpreter and the generated binfmt registration. This avoids switching in
+# any unrelated worktree changes merely to assemble the TV image.
+host_system=$(nix build --no-link --print-out-paths "$host_target")
+interpreter=$(
+  nix eval --raw \
+    "${flake}#nixosConfigurations.clancy.config.boot.binfmt.registrations.aarch64-linux.interpreter"
+)
+interpreter_sandbox_path=$(
+  nix eval --raw \
+    "${flake}#nixosConfigurations.clancy.config.boot.binfmt.registrations.aarch64-linux.interpreterSandboxPath"
+)
+
+sudo install -d -m 0755 /run/binfmt /run/binfmt.d
+sudo ln -sfn "$interpreter" /run/binfmt/aarch64-linux
+sudo ln -sfn "$host_system/etc/binfmt.d/nixos.conf" /run/binfmt.d/nixos-tv.conf
+
+# systemd normally mounts binfmt_misc during boot when emulation is enabled in
+# the active generation. This helper deliberately avoids switching the entire
+# host generation, so mount it explicitly before loading the registration.
+if ! mountpoint -q /proc/sys/fs/binfmt_misc; then
+  sudo mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
+fi
+sudo "$host_system/systemd/lib/systemd/systemd-binfmt"
+
+echo "Checking the image build plan..."
+sudo nix --accept-flake-config build --dry-run --no-link "$image_target" \
+  --option extra-platforms aarch64-linux \
+  --option extra-sandbox-paths "/run/binfmt $interpreter_sandbox_path"
+
+echo "Building the TV image..."
+sudo nix --accept-flake-config build "$image_target" \
+  --option extra-platforms aarch64-linux \
+  --option extra-sandbox-paths "/run/binfmt $interpreter_sandbox_path" \
+  --out-link "$result_link"
+sudo chown -h "$(id -u):$(id -g)" "$result_link"
+
+image=$(find -L "$result_link/sd-image" -maxdepth 1 -type f -name '*.img.zst' -print -quit)
+if [[ -z "$image" ]]; then
+  echo "The build finished, but no compressed SD image was found." >&2
+  exit 1
+fi
+
+echo
+echo "TV image ready: $image"

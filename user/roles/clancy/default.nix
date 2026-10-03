@@ -92,40 +92,6 @@
       esac
     '';
   };
-
-  mkHyprcursorTheme = {
-    package,
-    themeName,
-  }:
-    pkgs.runCommand "${themeName}-hyprcursor" {
-      nativeBuildInputs = [
-        pkgs.hyprcursor
-        pkgs.xcur2png
-      ];
-    } ''
-      extracted_dir="$TMPDIR/extracted"
-      compiled_dir="$TMPDIR/compiled"
-      working_theme="$extracted_dir/extracted_${themeName}"
-      compiled_theme="$compiled_dir/theme_${themeName}"
-      cursor_dir="$out/share/icons/${themeName}"
-
-      mkdir -p "$extracted_dir" "$compiled_dir" "$cursor_dir"
-      hyprcursor-util \
-        --extract "${package}/share/icons/${themeName}" \
-        --output "$extracted_dir" >/dev/null
-      sed -i 's/^name =.*/name = ${themeName}/' "$working_theme/manifest.hl"
-      hyprcursor-util \
-        --create "$working_theme" \
-        --output "$compiled_dir" >/dev/null
-
-      cp -rs "${package}/share/icons/${themeName}/." "$cursor_dir/"
-      cp -r "$compiled_theme/." "$cursor_dir/"
-    '';
-
-  cursorTheme = mkHyprcursorTheme {
-    package = pkgs.phinger-cursors;
-    themeName = "phinger-cursors-dark";
-  };
 in {
   imports = [
     ../../modules/hyprland
@@ -259,12 +225,10 @@ in {
     };
 
     # UWSM launches applications through the user manager, so mirror the
-    # pointerCursor variables into systemd's session environment as well.
+    # XCursor variables into systemd's session environment as well.
     systemd.user.sessionVariables = {
-      HYPRCURSOR_THEME = "phinger-cursors-dark";
-      HYPRCURSOR_SIZE = 32;
-      XCURSOR_THEME = "phinger-cursors-dark";
-      XCURSOR_SIZE = 32;
+      XCURSOR_THEME = "Yaru";
+      XCURSOR_SIZE = 24;
     };
 
     wayland.windowManager.hyprland.systemd.enable = false;
@@ -279,11 +243,10 @@ in {
 
     home.pointerCursor = {
       gtk.enable = true;
-      hyprcursor.enable = true;
       x11.enable = true;
-      package = cursorTheme;
-      name = "phinger-cursors-dark";
-      size = 32;
+      package = pkgs.yaru-theme;
+      name = "Yaru";
+      size = 24;
     };
 
     # Default apps

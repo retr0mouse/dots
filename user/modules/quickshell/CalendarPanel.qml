@@ -16,6 +16,11 @@ PanelWindow {
 
     signal closeRequested()
 
+    function openFullApp(): void {
+        root.shell.run(["kitty", "--class", "waybar-calendar", "--title", "[ calendar ]", "-e", "calcurse"]);
+        root.closeRequested();
+    }
+
     function moveMonth(offset: int): void {
         const next = new Date(displayYear, displayMonth + offset, 1);
         displayYear = next.getFullYear();
@@ -73,7 +78,7 @@ PanelWindow {
             height: 28
 
             Text {
-                width: parent.width - previousButton.width - nextButton.width - closeButton.width
+                width: parent.width - previousButton.width - nextButton.width - expandButton.width
                 height: parent.height
                 verticalAlignment: Text.AlignVCenter
                 text: `[ ${Qt.formatDate(new Date(root.displayYear, root.displayMonth, 1), "MMMM yyyy").toLowerCase()} ]`
@@ -130,25 +135,12 @@ PanelWindow {
                 }
             }
 
-            Rectangle {
-                id: closeButton
+            PanelExpandButton {
+                id: expandButton
                 width: 30
                 height: parent.height
-                color: closePointer.containsMouse ? root.shell.secondBackground : "transparent"
-
-                Text {
-                    anchors.centerIn: parent
-                    text: "×"
-                    color: root.shell.structureColor
-                    font.pixelSize: 18
-                }
-
-                MouseArea {
-                    id: closePointer
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: root.closeRequested()
-                }
+                shell: root.shell
+                onClicked: root.openFullApp()
             }
         }
 

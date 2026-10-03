@@ -17,6 +17,11 @@ PanelWindow {
 
     signal closeRequested()
 
+    function openFullApp(): void {
+        root.shell.run(["kitty", "--class", "waybar-bluetooth", "--title", "[ bluetooth ]", "-e", "bluetui"]);
+        root.closeRequested();
+    }
+
     function deviceLabel(device): string {
         if (!device)
             return "unknown device";
@@ -218,21 +223,11 @@ PanelWindow {
                 font.bold: true
             }
 
-            Text {
+            PanelExpandButton {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                width: 28
-                horizontalAlignment: Text.AlignHCenter
-                text: "×"
-                color: closePointer.containsMouse ? root.shell.textColor : root.shell.structureColor
-                font.pixelSize: 18
-
-                MouseArea {
-                    id: closePointer
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: root.closeRequested()
-                }
+                shell: root.shell
+                onClicked: root.openFullApp()
             }
         }
 
@@ -304,22 +299,28 @@ PanelWindow {
                 }
                 width: 64
                 height: 28
-                color: root.adapter && root.adapter.enabled ? root.shell.focusedColor : root.shell.background
+                color: adapterTogglePointer.containsMouse
+                    ? root.shell.hoverColor
+                    : (root.adapter && root.adapter.enabled ? root.shell.focusedColor : root.shell.background)
                 border.width: 1
-                border.color: root.adapter && root.adapter.enabled ? root.shell.focusedColor : root.shell.borderColor
+                border.color: adapterTogglePointer.containsMouse
+                    ? root.shell.hoverColor
+                    : (root.adapter && root.adapter.enabled ? root.shell.focusedColor : root.shell.borderColor)
                 opacity: root.adapter && root.adapter.state !== BluetoothAdapterState.Blocked ? 1 : 0.45
 
                 Text {
                     anchors.centerIn: parent
-                    text: root.adapter && root.adapter.enabled ? "on" : "off"
-                    color: root.adapter && root.adapter.enabled ? root.shell.background : root.shell.textColor
+                    text: root.adapter && root.adapter.enabled ? "disable" : "enable"
+                    color: adapterTogglePointer.containsMouse || (root.adapter && root.adapter.enabled) ? root.shell.background : root.shell.textColor
                     font.family: "Iosevka Nerd Font"
                     font.pixelSize: 11
                 }
 
                 MouseArea {
+                    id: adapterTogglePointer
                     anchors.fill: parent
                     enabled: root.adapter && root.adapter.state !== BluetoothAdapterState.Blocked
+                    hoverEnabled: true
                     onClicked: root.adapter.enabled = !root.adapter.enabled
                 }
             }
@@ -359,7 +360,7 @@ PanelWindow {
 
                 Text {
                     anchors.centerIn: parent
-                    text: root.adapter && root.adapter.discovering ? "scanning…" : "scan"
+                    text: root.adapter && root.adapter.discovering ? "stop scan" : "scan"
                     color: root.adapter && root.adapter.discovering ? root.shell.focusedColor : root.shell.textColor
                     font.family: "Iosevka Nerd Font"
                     font.pixelSize: 10
@@ -412,11 +413,11 @@ PanelWindow {
             visible: root.adapter && root.adapter.enabled && root.deviceList.length > 0
             anchors {
                 top: devicesHeader.bottom
-                bottom: advancedButton.top
+                bottom: parent.bottom
                 left: parent.left
                 right: parent.right
                 topMargin: 4
-                bottomMargin: 10
+                bottomMargin: 12
                 leftMargin: 12
                 rightMargin: 12
             }
@@ -536,36 +537,5 @@ PanelWindow {
             }
         }
 
-        Rectangle {
-            id: advancedButton
-            anchors {
-                bottom: parent.bottom
-                left: parent.left
-                right: parent.right
-                margins: 12
-            }
-            height: 34
-            color: advancedPointer.containsMouse ? root.shell.secondBackground : "transparent"
-            border.width: 1
-            border.color: root.shell.borderColor
-
-            Text {
-                anchors.centerIn: parent
-                text: "open advanced bluetooth manager"
-                color: root.shell.textColor
-                font.family: "Iosevka Nerd Font"
-                font.pixelSize: 10
-            }
-
-            MouseArea {
-                id: advancedPointer
-                anchors.fill: parent
-                hoverEnabled: true
-                onClicked: {
-                    root.shell.run(["kitty", "--class", "waybar-bluetooth", "--title", "[ bluetooth ]", "-e", "bluetui"]);
-                    root.closeRequested();
-                }
-            }
-        }
     }
 }

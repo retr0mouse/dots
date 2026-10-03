@@ -24,6 +24,7 @@ ShellRoot {
     readonly property bool showPowerProfile: Quickshell.env("QS_SHOW_POWER_PROFILE") === "1"
     readonly property bool showVpn: Quickshell.env("QS_SHOW_VPN") === "1"
     readonly property string backlightDevice: Quickshell.env("QS_BACKLIGHT_DEVICE") || ""
+    readonly property string brightnessCommand: Quickshell.env("QS_BRIGHTNESS_COMMAND") || "brightnessctl"
 
     readonly property var audioSink: Pipewire.defaultAudioSink
     readonly property real volume: audioSink && audioSink.audio ? audioSink.audio.volume : 0
@@ -47,7 +48,7 @@ ShellRoot {
     function setBrightness(value: real): void {
         const bounded = Math.max(0.01, Math.min(1, value));
         systemData.brightnessRatio = bounded;
-        run(["brightnessctl", "--device", backlightDevice, "set", `${Math.round(bounded * 100)}%`]);
+        run([brightnessCommand, "--device", backlightDevice, "set", `${Math.round(bounded * 100)}%`]);
         brightnessRefresh.restart();
     }
 

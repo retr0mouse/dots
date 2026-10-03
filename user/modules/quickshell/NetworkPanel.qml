@@ -54,6 +54,11 @@ PanelWindow {
 
     signal closeRequested()
 
+    function openFullApp(): void {
+        root.shell.run(["kitty", "--class", "waybar-network", "--title", "[ network ]", "-e", "wlctl"]);
+        root.closeRequested();
+    }
+
     function findDevice(type): var {
         const devices = root.networkDevices || [];
         for (let index = 0; index < devices.length; ++index) {
@@ -130,8 +135,7 @@ PanelWindow {
             network.disconnect();
             passwordSsid = "";
         } else if (requiresExternalManager(network)) {
-            root.shell.run(["kitty", "--class", "waybar-network", "--title", "[ network ]", "-e", "wlctl"]);
-            root.closeRequested();
+            root.openFullApp();
         } else if (requiresPassword(network)) {
             passwordText = "";
             passwordVisible = false;
@@ -314,21 +318,11 @@ PanelWindow {
                 font.bold: true
             }
 
-            Text {
+            PanelExpandButton {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                width: 28
-                horizontalAlignment: Text.AlignHCenter
-                text: "×"
-                color: closePointer.containsMouse ? root.shell.textColor : root.shell.structureColor
-                font.pixelSize: 18
-
-                MouseArea {
-                    id: closePointer
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: root.closeRequested()
-                }
+                shell: root.shell
+                onClicked: root.openFullApp()
             }
         }
 
@@ -551,22 +545,28 @@ PanelWindow {
                         id: wifiToggle
                         width: 64
                         height: 26
-                        color: Networking.wifiEnabled ? root.shell.focusedColor : root.shell.secondBackground
+                        color: wifiTogglePointer.containsMouse
+                            ? root.shell.hoverColor
+                            : (Networking.wifiEnabled ? root.shell.focusedColor : root.shell.secondBackground)
                         border.width: 1
-                        border.color: Networking.wifiEnabled ? root.shell.focusedColor : root.shell.borderColor
+                        border.color: wifiTogglePointer.containsMouse
+                            ? root.shell.hoverColor
+                            : (Networking.wifiEnabled ? root.shell.focusedColor : root.shell.borderColor)
                         opacity: Networking.wifiHardwareEnabled ? 1 : 0.4
 
                         Text {
                             anchors.centerIn: parent
-                            text: Networking.wifiEnabled ? "on" : "off"
-                            color: Networking.wifiEnabled ? root.shell.background : root.shell.textColor
+                            text: Networking.wifiEnabled ? "disable" : "enable"
+                            color: wifiTogglePointer.containsMouse || Networking.wifiEnabled ? root.shell.background : root.shell.textColor
                             font.family: "Iosevka Nerd Font"
                             font.pixelSize: 11
                         }
 
                         MouseArea {
+                            id: wifiTogglePointer
                             anchors.fill: parent
                             enabled: Networking.wifiHardwareEnabled
+                            hoverEnabled: true
                             onClicked: {
                                 Networking.wifiEnabled = !Networking.wifiEnabled;
                                 actionRefresh.restart();
@@ -679,7 +679,7 @@ PanelWindow {
                                     height: 28
                                     color: networkActionPointer.containsMouse ? root.shell.secondBackground : "transparent"
                                     border.width: 1
-                                    border.color: networkItem.modelData.connected ? root.shell.urgentColor : root.shell.borderColor
+                                    border.color: networkItem.modelData.connected ? root.shell.focusedColor : root.shell.borderColor
                                     opacity: networkItem.modelData.stateChanging ? 0.55 : 1
 
                                     Text {
@@ -687,7 +687,7 @@ PanelWindow {
                                         text: networkItem.modelData.stateChanging
                                             ? "working…"
                                             : (networkItem.modelData.connected ? "disconnect" : "connect")
-                                        color: networkItem.modelData.connected ? root.shell.urgentColor : root.shell.focusedColor
+                                        color: root.shell.focusedColor
                                         font.family: "Iosevka Nerd Font"
                                         font.pixelSize: 10
                                     }
@@ -810,31 +810,6 @@ PanelWindow {
                     }
                 }
 
-                Rectangle {
-                    width: parent.width
-                    height: 34
-                    color: advancedPointer.containsMouse ? root.shell.secondBackground : "transparent"
-                    border.width: 1
-                    border.color: root.shell.borderColor
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "open advanced network manager"
-                        color: root.shell.textColor
-                        font.family: "Iosevka Nerd Font"
-                        font.pixelSize: 11
-                    }
-
-                    MouseArea {
-                        id: advancedPointer
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onClicked: {
-                            root.shell.run(["kitty", "--class", "waybar-network", "--title", "[ network ]", "-e", "wlctl"]);
-                            root.closeRequested();
-                        }
-                    }
-                }
             }
         }
     }

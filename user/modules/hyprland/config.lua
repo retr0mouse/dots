@@ -10,13 +10,10 @@ local screenshot = "screenshot-region"
 
 local hyprmoncfg_monitors = os.getenv("HOME") .. "/.config/hypr/hyprmoncfg-monitors.lua"
 
--- Keep Hyprland's native cursor and its XCursor fallback in sync.  Home
--- Manager installs the theme, but UWSM does not inherit pointerCursor's
--- generated values early enough for the compositor session.
-hl.env("HYPRCURSOR_THEME", "phinger-cursors-dark")
-hl.env("HYPRCURSOR_SIZE", "32")
-hl.env("XCURSOR_THEME", "phinger-cursors-dark")
-hl.env("XCURSOR_SIZE", "32")
+-- UWSM does not inherit Home Manager's pointerCursor variables early enough
+-- for the compositor session, so set the standard XCursor theme explicitly.
+hl.env("XCURSOR_THEME", "Yaru")
+hl.env("XCURSOR_SIZE", "24")
 
 local file = io.open(hyprmoncfg_monitors, "r")
 if file then
@@ -144,51 +141,6 @@ hl.window_rule({
 		class = "^Minecraft.*$",
 	},
 	workspace = "5 silent",
-})
-
-hl.window_rule({
-	match = {
-		class = "^(com.saivert.pwvucontrol)$",
-	},
-	float = true,
-	size = "70% 70%",
-	center = true,
-})
-
-hl.window_rule({
-	match = {
-		class = "^(waybar-performance)$",
-	},
-	float = true,
-	size = "70% 70%",
-	center = true,
-})
-
-hl.window_rule({
-	match = {
-		class = "^(waybar-monitor)$",
-	},
-	float = true,
-	size = "70% 70%",
-	center = true,
-})
-
-hl.window_rule({
-	match = {
-		class = "^(waybar-network)$",
-	},
-	float = true,
-	size = "70% 70%",
-	center = true,
-})
-
-hl.window_rule({
-	match = {
-		class = "^(waybar-bluetooth)$",
-	},
-	float = true,
-	size = "70% 70%",
-	center = true,
 })
 
 -- Move and resize windows with mouse

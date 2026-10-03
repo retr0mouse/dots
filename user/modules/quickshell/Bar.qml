@@ -9,6 +9,11 @@ PanelWindow {
     required property var shell
     required property var data
 
+    // Fractional output scales can round the layer surface and its exclusive
+    // zone to different physical pixels. Paint one pixel past the reserved
+    // area so the wallpaper cannot show through between the bar and clients.
+    readonly property int reservedHeight: 28
+    readonly property int seamOverlap: 1
     readonly property var monitor: Hyprland.monitorFor(screen)
     property string activePanel: ""
 
@@ -25,9 +30,9 @@ PanelWindow {
         right: true
     }
 
-    implicitHeight: 28
+    implicitHeight: reservedHeight + seamOverlap
     color: shell.background
-    exclusiveZone: 28
+    exclusiveZone: reservedHeight
 
     Text {
         id: hiddenMetrics
@@ -41,7 +46,7 @@ PanelWindow {
         parent: bar.contentItem
         anchors.left: parent.left
         anchors.top: parent.top
-        height: bar.implicitHeight
+        height: bar.reservedHeight
 
         Rectangle {
             id: dashboardButton
@@ -121,7 +126,7 @@ PanelWindow {
         parent: bar.contentItem
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        height: bar.implicitHeight
+        height: bar.reservedHeight
 
         Text {
             height: parent.height
@@ -216,7 +221,7 @@ PanelWindow {
         parent: bar.contentItem
         anchors.right: parent.right
         anchors.top: parent.top
-        height: bar.implicitHeight
+        height: bar.reservedHeight
 
         Text {
             height: parent.height
@@ -472,16 +477,14 @@ PanelWindow {
     LazyLoader {
         active: bar.activePanel === "brightness"
 
-        ControlPopup {
+        DisplayPanel {
             visible: true
             targetScreen: bar.screen
             anchorX: rightModules.x + brightnessButton.x + brightnessButton.width / 2
             anchorBottom: rightModules.y + brightnessButton.y + brightnessButton.height
             shell: bar.shell
-            icon: "󰍹"
-            title: "display"
-            controlValue: bar.data.brightnessRatio
-            onValueRequested: value => bar.shell.setBrightness(value)
+            systemData: bar.data
+            onCloseRequested: bar.activePanel = ""
         }
     }
 

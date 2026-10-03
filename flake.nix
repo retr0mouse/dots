@@ -1,10 +1,33 @@
 {
+  nixConfig = {
+    extra-substituters = [
+      "https://nixos-raspberrypi.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI="
+    ];
+  };
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
+
+    # The Raspberry Pi 5 boot support and current Plasma Bigscreen package
+    # are newer than the package set used by the existing deployments.
+    nixpkgs-tv.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    # Declarative Raspberry Pi firmware, bootloader and vendor kernel stack.
+    # Keep this pinned to a release so a future input update cannot silently
+    # replace the kernel used by the TV image.
+    nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi/v1.20260801.0";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    home-manager-tv = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs-tv";
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -34,6 +57,11 @@
         systemModule = ./system/roles/nico;
         userModule = ./user/roles/nico;
       };
+
+      tv = {
+        systemModule = ./system/roles/tv;
+        userModule = ./user/roles/tv;
+      };
     };
 
     machines = {
@@ -48,6 +76,13 @@
         system = "x86_64-linux";
         systemModule = ./system/machines/msi-gp62m-7rdx;
         roleSystemModules.nico = ./system/machines/msi-gp62m-7rdx/nico.nix;
+      };
+
+      "raspberry-pi-5" = {
+        system = "aarch64-linux";
+        nixpkgsInput = inputs.nixpkgs-tv;
+        homeManagerInput = inputs.home-manager-tv;
+        systemModule = ./system/machines/raspberry-pi-5;
       };
     };
 
@@ -64,6 +99,12 @@
       nico = {
         role = "nico";
         machine = "msi-gp62m-7rdx";
+        username = "reisdro";
+      };
+
+      tv = {
+        role = "tv";
+        machine = "raspberry-pi-5";
         username = "reisdro";
       };
     };
@@ -86,20 +127,25 @@
       roleName = deployment.role;
       machineName = deployment.machine;
       username = deployment.username;
+      deploymentNixpkgs = machine.nixpkgsInput or nixpkgs;
+      deploymentHomeManager = machine.homeManagerInput or home-manager;
+      enableHomeManager = machine.enableHomeManager or (role ? userModule);
       roleSystemModule =
         nixpkgs.lib.attrByPath [roleName] null (machine.roleSystemModules or {});
       roleUserModule =
         nixpkgs.lib.attrByPath [roleName] null (machine.roleUserModules or {});
-      userModules =
+      userModules = nixpkgs.lib.optionals enableHomeManager (
         [
           ./user/common.nix
           role.userModule
         ]
-        ++ nixpkgs.lib.optional (roleUserModule != null) roleUserModule;
+        ++ nixpkgs.lib.optional (roleUserModule != null) roleUserModule
+      );
     in
-      nixpkgs.lib.nixosSystem {
+      deploymentNixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs machineName roleName username;
+          nixos-raspberrypi = inputs.nixos-raspberrypi;
         };
 
         modules =
@@ -111,18 +157,9 @@
             machine.systemModule
           ]
           ++ nixpkgs.lib.optional (roleSystemModule != null) roleSystemModule
-          ++ [
-            home-manager.nixosModules.home-manager
-
+          ++ nixpkgs.lib.optionals enableHomeManager [
+            deploymentHomeManager.nixosModules.home-manager
             {
-              networking.hostName = deployment.hostName or deploymentName;
-
-              dotfiles.deployment = {
-                role = roleName;
-                machine = machineName;
-                activateIdentity = deployment.activateIdentity or true;
-              };
-
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
@@ -132,6 +169,17 @@
               };
 
               home-manager.users.${username}.imports = userModules;
+            }
+          ]
+          ++ [
+            {
+              networking.hostName = deployment.hostName or deploymentName;
+
+              dotfiles.deployment = {
+                role = roleName;
+                machine = machineName;
+                activateIdentity = deployment.activateIdentity or true;
+              };
             }
           ];
       };

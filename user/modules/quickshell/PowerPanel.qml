@@ -105,23 +105,6 @@ PanelWindow {
                 font.bold: true
             }
 
-            Text {
-                id: closeButton
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                width: 28
-                horizontalAlignment: Text.AlignHCenter
-                text: "×"
-                color: closePointer.containsMouse ? root.shell.textColor : root.shell.structureColor
-                font.pixelSize: 18
-
-                MouseArea {
-                    id: closePointer
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: root.closeRequested()
-                }
-            }
         }
 
         Column {
@@ -260,9 +243,15 @@ PanelWindow {
 
                         width: (parent.width - 12) / 3
                         height: parent.height
-                        color: selected ? root.shell.focusedColor : (profilePointer.containsMouse && supported ? root.shell.secondBackground : "transparent")
+                        color: profilePointer.containsMouse && supported && selected
+                            ? root.shell.hoverColor
+                            : (selected
+                                ? root.shell.focusedColor
+                                : (profilePointer.containsMouse && supported ? root.shell.secondBackground : "transparent"))
                         border.width: 1
-                        border.color: selected ? root.shell.focusedColor : root.shell.borderColor
+                        border.color: profilePointer.containsMouse && supported && selected
+                            ? root.shell.hoverColor
+                            : (selected ? root.shell.focusedColor : root.shell.borderColor)
                         opacity: supported ? 1 : 0.4
 
                         Text {

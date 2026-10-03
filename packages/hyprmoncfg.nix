@@ -5,11 +5,11 @@
 }:
 stdenvNoCC.mkDerivation rec {
   pname = "hyprmoncfg";
-  version = "1.18.2";
+  version = "1.18.4";
 
   src = fetchurl {
     url = "https://github.com/crmne/hyprmoncfg/releases/download/v${version}/hyprmoncfg_${version}_linux_amd64.tar.gz";
-    hash = "sha256-N5NN7V0a6cP+dQxtSvLxSSMAu8yvyyvsbXLpyrBnZmU=";
+    hash = "sha256-Vk1tDbtiGuCBV1cYEfD3nH33wSyOo/paBs+w8tMcdAM=";
   };
 
   sourceRoot = ".";
