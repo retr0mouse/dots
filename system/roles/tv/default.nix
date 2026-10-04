@@ -9,6 +9,7 @@
   kodiTv = pkgs.kodi-wayland.withPackages (kodiPackages: [
     kodiPackages.jellyfin
     kodiPackages.typing_extensions
+    kodiPackages.youtube
   ]);
 
   jellyfinTv = pkgs.symlinkJoin {
