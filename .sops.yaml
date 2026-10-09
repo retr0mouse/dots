@@ -1,0 +1,10 @@
+keys:
+  - &clancy age19dp60wvpk8uynvsja4x853k3uhvcwntuuv26wmz8r302awk4cc3quw7zc7
+  - &nico age1ryaw5fk24t9gpjs7qmhp4m32hanl6cah95l0fx7gv3cq6lvs2ucs56em4l
+
+creation_rules:
+  - path_regex: ^secrets/(clancy|nico)/.*$
+    key_groups:
+      - age:
+          - *clancy
+          - *nico

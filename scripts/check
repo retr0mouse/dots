@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+cd "$repo_root"
+
+hosts=(clancy nico)
+
+usage() {
+    echo "usage: $0 eval | build {clancy|nico}" >&2
+    exit 2
+}
+
+known_host() {
+    local candidate=$1
+    local host
+
+    for host in "${hosts[@]}"; do
+        if [[ "$candidate" == "$host" ]]; then
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+case "${1:-}" in
+    eval)
+        [[ $# -eq 1 ]] || usage
+
+        nix flake check path:. \
+            --no-build \
+            --no-write-lock-file
+
+        for host in "${hosts[@]}"; do
+            printf 'evaluating %s...\n' "$host"
+            nix eval --raw \
+                "path:.#nixosConfigurations.${host}.config.system.build.toplevel.drvPath" \
+                --no-write-lock-file >/dev/null
+        done
+
+        bash -n scripts/check
+        while IFS= read -r -d '' script; do
+            bash -n "$script"
+        done < <(find hosts -type f -name '*.sh' -print0)
+
+        while IFS= read -r -d '' json; do
+            jq empty "$json"
+        done < <(find hosts modules -type f -name '*.json' -print0)
+        ;;
+
+    build)
+        [[ $# -eq 2 ]] || usage
+        known_host "$2" || usage
+
+        nix build \
+            "path:.#nixosConfigurations.$2.config.system.build.toplevel" \
+            --no-link \
+            --print-build-logs \
+            --no-write-lock-file
+        ;;
+
+    *)
+        usage
+        ;;
+esac

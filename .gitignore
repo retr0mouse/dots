@@ -1,0 +1,13 @@
+/result
+/result-*
+/.direnv/
+
+# Never commit private age keys or decrypted secret scratch files.
+*.agekey
+
+# An encrypted repository secret must advertise that fact in its filename.
+# Directories remain visible so the negated encrypted-file rules can match.
+secrets/**
+!secrets/**/
+!secrets/**/*.sops
+!secrets/**/*.sops.*
