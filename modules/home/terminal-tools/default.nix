@@ -96,6 +96,139 @@
         border_style = {fg = "#303630";};
       };
 
+      filetype.rules = [
+        {
+          mime = "image/*";
+          fg = "yellow";
+        }
+        {
+          mime = "{audio,video}/*";
+          fg = "magenta";
+        }
+        {
+          mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}";
+          fg = "red";
+        }
+        {
+          mime = "application/{pdf,doc,rtf}";
+          fg = "cyan";
+        }
+        {
+          mime = "vfs/{absent,stale}";
+          fg = "darkgray";
+        }
+        {
+          url = "*";
+          is = "orphan";
+          bg = "red";
+        }
+        {
+          url = "*";
+          is = "exec";
+          fg = "green";
+        }
+        {
+          url = "*";
+          is = "dummy";
+          bg = "red";
+        }
+        {
+          url = "*/";
+          is = "dummy";
+          bg = "red";
+        }
+        {
+          url = "*/";
+          fg = "#98a87c";
+        }
+      ];
+
+      icon.prepend_dirs = [
+        {
+          name = ".config";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = ".git";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = ".github";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = ".npm";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = "Desktop";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = "Development";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = "Documents";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = "Downloads";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = "Library";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = "Movies";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = "Music";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = "Pictures";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = "Public";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          name = "Videos";
+          text = "";
+          fg = "#98a87c";
+        }
+      ];
+
+      icon.prepend_conds = [
+        {
+          "if" = "dir & hovered";
+          text = "";
+          fg = "#98a87c";
+        }
+        {
+          "if" = "dir";
+          text = "";
+          fg = "#98a87c";
+        }
+      ];
+
       tabs = {
         active = {
           fg = "#101211";
