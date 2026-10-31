@@ -15,7 +15,7 @@
     codex # AI
     nodejs # runtime for Pi packages
     pi-coding-agent # AI agent harness
-    tmux # terminal multiplexer (Pi subagents)
+    nh # nix search in terminal
 
     # terminal / UI apps
     kitty-themes # Kitty color scheme collection
@@ -46,6 +46,7 @@
     sl # fun terminal animation (train)
     hollywood # “hacker screen” fake terminal effect
     unrar # archive utility
+    file-roller # archive manager
     hyprmoncfg # monitors TUI and daemon
 
     # Wayland graphics / screen tools
@@ -55,6 +56,7 @@
     hyprpicker # freeze the desktop during screenshot selection
     wf-recorder # screen recording tool (Wayland)
     hyprpaper # wallpaper daemon for Hyprland
+    imv # image viewer
     gamescope # gaming compositor (Steam/Proton use)
 
     # office / productivity
@@ -64,8 +66,7 @@
     hunspellDicts.ru_RU # Russian dictionary for hunspell
     hunspellDicts.en-us # English dictionary for hunspell
     foliate # ebook reader
-    readest # ebook reader, yes, another one
-    koreader
+    evince # document viewer, pdf reader
 
     # media / creative tools
     vlc # media player

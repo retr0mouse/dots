@@ -181,9 +181,11 @@ in {
       Install.WantedBy = ["graphical-session.target"];
     };
 
-    # UWSM launches applications through the user manager, so mirror the
-    # XCursor variables into systemd's session environment as well.
+    # UWSM launches applications through the user manager, so keep its
+    # environment aligned with the interactive Home Manager session.
     systemd.user.sessionVariables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
       XCURSOR_THEME = "Yaru";
       XCURSOR_SIZE = 24;
     };
@@ -207,16 +209,116 @@ in {
     };
 
     # Default apps
+    xdg.desktopEntries.nvim = {
+      name = "Neovim";
+      genericName = "Text Editor";
+      comment = "Edit text and source files in Neovim";
+      exec = "${pkgs.kitty}/bin/kitty --class nvim -e ${pkgs.neovim}/bin/nvim %F";
+      icon = "nvim";
+      terminal = false;
+      categories = [
+        "Development"
+        "TextEditor"
+      ];
+      mimeType = [
+        "application/javascript"
+        "application/json"
+        "application/toml"
+        "application/xml"
+        "application/x-javascript"
+        "application/x-yaml"
+        "application/yaml"
+        "text/markdown"
+        "text/plain"
+        "text/x-c"
+        "text/x-c++"
+        "text/x-c++hdr"
+        "text/x-c++src"
+        "text/x-chdr"
+        "text/x-csrc"
+        "text/x-lua"
+        "text/x-python"
+        "text/x-qml"
+        "text/x-rust"
+        "text/x-shellscript"
+      ];
+    };
+
+    xdg.desktopEntries."yazi-kitty" = {
+      name = "Yazi";
+      genericName = "File Manager";
+      comment = "Browse directories in Yazi";
+      exec = "${pkgs.kitty}/bin/kitty --class yazi -e ${pkgs.yazi}/bin/yazi %f";
+      icon = "kitty";
+      terminal = false;
+      noDisplay = true;
+      categories = ["System" "FileTools" "FileManager"];
+      mimeType = ["inode/directory"];
+    };
+
     xdg.mimeApps = {
       enable = true;
 
-      defaultApplications = {
-        "text/html" = "brave.desktop";
-        "x-scheme-handler/http" = "brave.desktop";
-        "x-scheme-handler/https" = "brave.desktop";
-        "x-scheme-handler/about" = "brave.desktop";
-        "x-scheme-handler/unknown" = "brave.desktop";
+      associations.removed = {
+        "application/zip" = "org.prismlauncher.PrismLauncher.desktop";
       };
+
+      defaultApplications = {
+        "application/javascript" = "nvim.desktop";
+        "application/json" = "nvim.desktop";
+        "application/toml" = "nvim.desktop";
+        "application/xml" = "nvim.desktop";
+        "application/x-javascript" = "nvim.desktop";
+        "application/x-yaml" = "nvim.desktop";
+        "application/yaml" = "nvim.desktop";
+        "image/avif" = "imv.desktop";
+        "image/bmp" = "imv.desktop";
+        "image/gif" = "imv.desktop";
+        "image/heif" = "imv.desktop";
+        "image/jpeg" = "imv.desktop";
+        "image/jpg" = "imv.desktop";
+        "image/jxl" = "imv.desktop";
+        "image/pjpeg" = "imv.desktop";
+        "image/png" = "imv.desktop";
+        "image/qoi" = "imv.desktop";
+        "image/svg+xml" = "imv.desktop";
+        "image/tiff" = "imv.desktop";
+        "image/tiff-fx" = "imv.desktop";
+        "image/webp" = "imv.desktop";
+        "image/x-bmp" = "imv.desktop";
+        "image/x-farbfeld" = "imv.desktop";
+        "image/x-png" = "imv.desktop";
+        "inode/directory" = "yazi-kitty.desktop";
+        "text/html" = "brave-browser.desktop";
+        "text/markdown" = "nvim.desktop";
+        "text/plain" = "nvim.desktop";
+        "text/x-c" = "nvim.desktop";
+        "text/x-c++" = "nvim.desktop";
+        "text/x-c++hdr" = "nvim.desktop";
+        "text/x-c++src" = "nvim.desktop";
+        "text/x-chdr" = "nvim.desktop";
+        "text/x-csrc" = "nvim.desktop";
+        "text/x-lua" = "nvim.desktop";
+        "text/x-python" = "nvim.desktop";
+        "text/x-qml" = "nvim.desktop";
+        "text/x-rust" = "nvim.desktop";
+        "text/x-shellscript" = "nvim.desktop";
+        "x-scheme-handler/about" = "brave-browser.desktop";
+        "x-scheme-handler/http" = "brave-browser.desktop";
+        "x-scheme-handler/https" = "brave-browser.desktop";
+        "x-scheme-handler/obsidian" = "obsidian.desktop";
+        "x-scheme-handler/unknown" = "brave-browser.desktop";
+      };
+
+      defaultApplicationPackages = [
+        pkgs.file-roller
+        pkgs.evince
+        pkgs.foliate
+        pkgs.libreoffice-qt
+        pkgs.vlc
+        pkgs.qdigidoc
+        pkgs.qbittorrent
+      ];
     };
 
     home.sessionVariables = {
