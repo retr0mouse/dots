@@ -9,11 +9,7 @@ PanelWindow {
     required property var shell
     required property var data
 
-    // Fractional output scales can round the layer surface and its exclusive
-    // zone to different physical pixels. Paint one pixel past the reserved
-    // area so the wallpaper cannot show through between the bar and clients.
     readonly property int reservedHeight: 28
-    readonly property int seamOverlap: 1
     readonly property var monitor: Hyprland.monitorFor(screen)
     property string activePanel: ""
 
@@ -30,7 +26,7 @@ PanelWindow {
         right: true
     }
 
-    implicitHeight: reservedHeight + seamOverlap
+    implicitHeight: reservedHeight
     color: shell.background
     exclusiveZone: reservedHeight
 

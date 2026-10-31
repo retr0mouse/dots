@@ -63,12 +63,12 @@ hl.config({
 	general = {
 		gaps_in = 0,
 		gaps_out = 0,
-		border_size = 0,
+		border_size = 2,
 		layout = "dwindle",
 		no_focus_fallback = 1,
 		col = {
-			active_border = "rgba(00000000)",
-			inactive_border = "rgba(00000000)",
+			active_border = "rgba(98a87cff)",
+			inactive_border = "rgba(303630ff)",
 		},
 	},
 })
